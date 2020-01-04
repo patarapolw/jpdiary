@@ -1,0 +1,22 @@
+{
+  "name": "jpdiary",
+  "version": "1.0.0",
+  "description": "私の日本語日記と旅…",
+  "author": "Pacharapol Withayasakpunt",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt-ts",
+    "build": "nuxt-ts build",
+    "start": "nuxt-ts start",
+    "generate": "nuxt-ts generate"
+  },
+  "dependencies": {
+    "@nuxt/typescript-runtime": "^0.3.6",
+    "@nuxtjs/axios": "^5.3.6",
+    "nuxt": "^2.0.0",
+    "nuxt-buefy": "^0.3.2"
+  },
+  "devDependencies": {
+    "@nuxt/typescript-build": "^0.5.5"
+  }
+}
