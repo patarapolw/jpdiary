@@ -18,9 +18,6 @@ RUN make
 RUN make install
 RUN echo "dicdir = /usr/local/lib/mecab/dic/ipadic" > /usr/local/etc/mecabrc
 
-# Clean up
-RUN apk del alpine-sdk
-
 RUN mkdir -p /server
 WORKDIR /server
 COPY packages/server/package.json packages/server/package-lock.json ./
@@ -28,6 +25,8 @@ RUN npm i
 COPY packages/server .
 RUN npm run build
 RUN npm prune
+RUN apk del alpine-sdk
+
 EXPOSE 8080
 
 CMD [ "npm", "start" ]

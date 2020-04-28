@@ -25,7 +25,8 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
                 type: 'object',
                 properties: {
                   jpn: { type: 'string' },
-                  eng: { type: 'string' }
+                  eng: { type: 'string' },
+                  tag: { type: 'array', items: { type: 'string' } }
                 }
               }
             }
@@ -72,9 +73,18 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
     const rData = await DbSentenceModel.aggregate([
       ...conds,
       {
+        $lookup: {
+          from: 'sentenceTag',
+          localField: '_id',
+          foreignField: 'sentenceId',
+          as: 't'
+        }
+      },
+      {
         $project: {
           jpn: '$text',
-          eng: '$s.text'
+          eng: '$s.text',
+          tag: '$t.tagName'
         }
       }
     ])
@@ -108,7 +118,8 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
                 type: 'object',
                 properties: {
                   jpn: { type: 'string' },
-                  eng: { type: 'string' }
+                  eng: { type: 'string' },
+                  tag: { type: 'array', items: { type: 'string' } }
                 }
               }
             },
@@ -171,7 +182,22 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
           }
         },
         { $skip: offset },
-        { $limit: limit }
+        { $limit: limit },
+        {
+          $lookup: {
+            from: 'sentenceTag',
+            localField: '_id',
+            foreignField: 'sentenceId',
+            as: 't'
+          }
+        },
+        {
+          $project: {
+            jpn: '$text',
+            eng: '$s.text',
+            tag: '$t.tagName'
+          }
+        }
       ]),
       DbSentenceModel.aggregate([
         ...conds,
@@ -201,26 +227,49 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
         200: {
           type: 'object',
           properties: {
-            result: { type: 'string' }
+            result: {
+              type: 'object',
+              properties: {
+                jpn: { type: 'string' },
+                eng: { type: 'string' },
+                tag: { type: 'array', items: { type: 'string' } }
+              }
+            }
           }
         }
       }
     }
   }, async (req) => {
     const { kanji } = req.body
+    const r = (await DbSentenceModel.aggregate([
+      {
+        $match: {
+          text: kanji ? new RegExp(`[${kanji}]`) : undefined,
+          lang: 'jpn'
+        }
+      },
+      {
+        $sample: { size: 1 }
+      },
+      {
+        $lookup: {
+          from: 'sentenceTag',
+          localField: '_id',
+          foreignField: 'sentenceId',
+          as: 't'
+        }
+      },
+      {
+        $project: {
+          jpn: '$text',
+          eng: '$s.text',
+          tag: '$t.tagName'
+        }
+      }
+    ]))
 
     return {
-      result: (await DbSentenceModel.aggregate([
-        {
-          $match: {
-            text: kanji ? new RegExp(`[${kanji}]`) : undefined,
-            lang: 'jpn'
-          }
-        },
-        {
-          $sample: { size: 1 }
-        }
-      ]))[0].text
+      result: r[0]
     }
   })
 

@@ -24,3 +24,13 @@ class DbSentenceTag {
 }
 
 export const DbSentenceTagModel = getModelForClass(DbSentenceTag, { schemaOptions: { collection: 'sentenceTag' } })
+
+class DbVocab {
+  @prop() kanji!: string[]
+  @prop() readings!: string[]
+  @prop() info!: string[]
+  @prop() meanings!: string[]
+  @prop() ent_seq!: string
+}
+
+export const DbVocabModel = getModelForClass(DbVocab, { schemaOptions: { collection: 'vocab' } })
