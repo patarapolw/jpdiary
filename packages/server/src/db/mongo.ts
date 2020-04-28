@@ -4,6 +4,7 @@ class DbSentence {
   @prop() _id!: number
   @prop({ required: true }) lang!: string
   @prop({ required: true }) text!: string
+  @prop() segments?: string[]
 }
 
 export const DbSentenceModel = getModelForClass(DbSentence, { schemaOptions: { collection: 'sentence' } })

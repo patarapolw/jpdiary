@@ -1,8 +1,9 @@
 import { FastifyInstance } from 'fastify'
-
-import { mecab } from '../util'
+import MeCab from 'mecab-lite'
 
 export default (f: FastifyInstance, _: any, next: () => void) => {
+  const mc = new MeCab()
+
   f.post('/split', {
     schema: {
       tags: ['lib'],
@@ -26,7 +27,7 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
   }, async (req) => {
     const { entry } = req.body
     return {
-      result: mecab(entry)
+      result: mc.wakatigakiSync(entry)
     }
   })
 

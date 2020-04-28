@@ -2,11 +2,11 @@ import fs from 'fs'
 
 import csvParser from 'csv-parser'
 import mongoose from 'mongoose'
+import MeCab from 'mecab-lite'
 
 import 'log-buffer'
 
 import { DbTranslationModel, DbSentenceTagModel, DbSentenceModel } from '../src/db/mongo'
-import { MeCab } from '../src/util'
 
 export async function uploadSentence (): Promise<number[]> {
   const mc = new MeCab()
@@ -16,7 +16,7 @@ export async function uploadSentence (): Promise<number[]> {
     const sentences: any[] = []
     const ids: number[] = []
 
-    fs.createReadStream('/Users/patarapolw/Downloads/sentences.csv', 'utf8')
+    fs.createReadStream('/Downloads/sentences.csv', 'utf8')
       .pipe(csvParser({
         separator: '\t',
         headers: ['_id', 'lang', 'text']
@@ -24,24 +24,14 @@ export async function uploadSentence (): Promise<number[]> {
       .on('data', async (data) => {
         if (langs.has(data.lang)) {
           if (data.lang === 'jpn') {
-            const segments = await mc.split(data.text)
-            console.log(segments)
-            // sentences.push({
-            //   ...data,
-            //   segments
-            // })
+            const segments = mc.wakatigakiSync(data.text)
+            // console.log(segments)
             sentences.push({
-              updateOne: {
-                filter: {
-                  _id: data._id,
-                  update: {
-                    $set: { segments }
-                  }
-                }
-              }
+              ...data,
+              segments
             })
           } else {
-            // sentences.push(data)
+            sentences.push(data)
           }
 
           ids.push(data._id)
@@ -49,14 +39,11 @@ export async function uploadSentence (): Promise<number[]> {
 
         if (sentences.length > 1000) {
           const ss = sentences.splice(0, 1000)
-          // DbSentenceModel.insertMany(ss)
-          DbSentenceModel.bulkWrite(ss)
+          DbSentenceModel.insertMany(ss)
         }
       })
       .on('end', async () => {
-        // await DbSentenceModel.insertMany(sentences)
-        DbSentenceModel.bulkWrite(sentences)
-        mc.close()
+        await DbSentenceModel.insertMany(sentences)
         resolve(ids)
       })
       .on('error', reject)

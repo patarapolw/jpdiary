@@ -1,7 +1,10 @@
 import { FastifyInstance } from 'fastify'
 
+import { DbSentenceModel } from '../db/mongo'
+import { escapeRegExp } from '../util'
+
 export default (f: FastifyInstance, _: any, next: () => void) => {
-  f.post('/q', {
+  f.post('/match', {
     schema: {
       tags: ['sentence'],
       summary: 'Query for a given sentence',
@@ -9,7 +12,88 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
         type: 'object',
         required: ['entry'],
         properties: {
+          entry: { type: 'string' }
+        }
+      },
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            result: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  jpn: { type: 'string' },
+                  eng: { type: 'string' }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }, async (req) => {
+    const { entry } = req.body
+
+    const conds = [
+      {
+        $match: {
+          text: entry,
+          lang: 'jpn'
+        }
+      },
+      {
+        $lookup: {
+          from: 'translation',
+          localField: '_id',
+          foreignField: 'sentenceId',
+          as: 't'
+        }
+      },
+      {
+        $lookup: {
+          from: 'sentence',
+          localField: 't.translationId',
+          foreignField: '_id',
+          as: 's'
+        }
+      },
+      {
+        $unwind: '$s'
+      },
+      {
+        $match: {
+          's.lang': 'eng'
+        }
+      }
+    ]
+
+    const rData = await DbSentenceModel.aggregate([
+      ...conds,
+      {
+        $project: {
+          jpn: '$text',
+          eng: '$s.text'
+        }
+      }
+    ])
+
+    return {
+      result: rData
+    }
+  })
+
+  f.post('/q', {
+    schema: {
+      tags: ['sentence'],
+      summary: 'Query for sentences',
+      body: {
+        type: 'object',
+        required: ['entry'],
+        properties: {
           entry: { type: 'string' },
+          kanji: { type: 'string' },
           offset: { type: 'integer' },
           limit: { type: 'integer' }
         }
@@ -22,11 +106,9 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
               type: 'array',
               items: {
                 type: 'object',
-                required: ['chinese', 'english'],
                 properties: {
-                  chinese: { type: 'string' },
-                  pinyin: { type: 'string' },
-                  english: { type: 'string' }
+                  jpn: { type: 'string' },
+                  eng: { type: 'string' }
                 }
               }
             },
@@ -38,15 +120,107 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
       }
     }
   }, async (req) => {
-    const { entry, offset = 0, limit = 10 } = req.body
+    const { entry, kanji, offset = 0, limit = 10 } = req.body
+
+    const conds = [
+      {
+        $match: kanji ? {
+          $and: [
+            { text: new RegExp(escapeRegExp(entry)) },
+            { text: new RegExp(`[${kanji}]`) },
+            { lang: 'jpn' }
+          ]
+        } : {
+          text: new RegExp(escapeRegExp(entry)),
+          lang: 'jpn'
+        }
+      },
+      {
+        $lookup: {
+          from: 'translation',
+          localField: '_id',
+          foreignField: 'sentenceId',
+          as: 't'
+        }
+      },
+      {
+        $lookup: {
+          from: 'sentence',
+          localField: 't.translationId',
+          foreignField: '_id',
+          as: 's'
+        }
+      },
+      {
+        $unwind: '$s'
+      },
+      {
+        $match: {
+          's.lang': 'eng'
+        }
+      }
+    ]
+
+    const [rData, rCount] = await Promise.all([
+      DbSentenceModel.aggregate([
+        ...conds,
+        {
+          $project: {
+            jpn: '$text',
+            eng: '$s.text'
+          }
+        },
+        { $skip: offset },
+        { $limit: limit }
+      ]),
+      DbSentenceModel.aggregate([
+        ...conds,
+        { $count: 'count' }
+      ])
+    ])
 
     return {
-      result: stmt.sentenceQ({
-        offset, limit
-      }).all(`%${entry}%`),
-      count: (stmt.sentenceQCount.get(`%${entry}%`) || {}).count || 0,
+      result: rData,
+      count: (rCount[0] || {}).count || 0,
       offset,
       limit
+    }
+  })
+
+  f.post('/random', {
+    schema: {
+      tags: ['sentence'],
+      summary: 'Randomize a sentence given a limited set of Kanji',
+      body: {
+        type: 'object',
+        properties: {
+          kanji: { type: 'string' }
+        }
+      },
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            result: { type: 'string' }
+          }
+        }
+      }
+    }
+  }, async (req) => {
+    const { kanji } = req.body
+
+    return {
+      result: (await DbSentenceModel.aggregate([
+        {
+          $match: {
+            text: kanji ? new RegExp(`[${kanji}]`) : undefined,
+            lang: 'jpn'
+          }
+        },
+        {
+          $sample: { size: 1 }
+        }
+      ]))[0].text
     }
   })
 

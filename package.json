@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "docker run -e MONGO_URI jpdiary",
+    "start": "docker run -e MONGO_URI -p 8080:8080 jpdiary",
     "build": "docker build -t jpdiary .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
