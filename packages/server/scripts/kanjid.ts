@@ -3,6 +3,7 @@ import fs from 'fs'
 // @ts-ignore
 import { Iconv } from 'iconv'
 import mongoose from 'mongoose'
+import XRegExp from 'xregexp'
 
 import 'log-buffer'
 
@@ -24,8 +25,6 @@ async function readKanjiDic (src: string) {
   const promises: Promise<any>[] = []
 
   const parseRow = async (r: string) => {
-    // console.log(r)
-
     const [ks, remaining = ''] = r.split(/ (.*)$/g)
     if (!ks) {
       return
@@ -38,10 +37,10 @@ async function readKanjiDic (src: string) {
     const meanings = (remaining.match(/\{(.+?)\}/g) || []).map(r => r.slice(1, r.length - 1))
 
     remaining.replace(/\{.+?\}/g, '').split(' ').filter(r => r).map((r) => {
-      if (/[A-Z0-9]/i.test(r)) {
-        info.push(r)
-      } else {
+      if (XRegExp('[\\p{Hiragana}\\p{Katakana}]').test(r)) {
         readings.push(r)
+      } else {
+        info.push(r)
       }
     })
 

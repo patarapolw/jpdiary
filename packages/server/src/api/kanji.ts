@@ -1,12 +1,12 @@
 import { FastifyInstance } from 'fastify'
 
-import { DbVocabModel } from '../db/mongo'
+import { DbCharacterModel } from '../db/mongo'
 
 export default (f: FastifyInstance, _: any, next: () => void) => {
   f.post('/match', {
     schema: {
-      tags: ['vocab'],
-      summary: 'Find for a given vocab',
+      tags: ['kanji'],
+      summary: 'Find for a given kanji',
       body: {
         type: 'object',
         required: ['entry'],
@@ -23,7 +23,7 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
               items: {
                 type: 'object',
                 properties: {
-                  kanji: { type: 'array', items: { type: 'string' } },
+                  kanji: { type: 'string' },
                   readings: { type: 'array', items: { type: 'string' } },
                   info: { type: 'array', items: { type: 'string' } },
                   meanings: { type: 'array', items: { type: 'string' } }
@@ -36,31 +36,17 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
     }
   }, async (req) => {
     const { entry } = req.body
-
-    const conds = [
-      {
-        $match: {
-          $or: [
-            { kanji: entry },
-            { readings: entry }
-          ]
-        }
-      }
-    ]
-
-    const rData = await DbVocabModel.aggregate([
-      ...conds
-    ])
+    const rData = await DbCharacterModel.findOne({ kanji: entry })
 
     return {
-      result: rData
+      result: rData || {}
     }
   })
 
   f.post('/q', {
     schema: {
-      tags: ['vocab'],
-      summary: 'Query for vocab',
+      tags: ['kanji'],
+      summary: 'Query for kanji',
       body: {
         type: 'object',
         required: ['cond'],
@@ -79,7 +65,7 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
               items: {
                 type: 'object',
                 properties: {
-                  kanji: { type: 'array', items: { type: 'string' } },
+                  kanji: { type: 'string' },
                   readings: { type: 'array', items: { type: 'string' } },
                   info: { type: 'array', items: { type: 'string' } },
                   meanings: { type: 'array', items: { type: 'string' } }
@@ -103,12 +89,12 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
     ]
 
     const [rData, rCount] = await Promise.all([
-      DbVocabModel.aggregate([
+      DbCharacterModel.aggregate([
         ...conds,
         { $skip: offset },
         { $limit: limit }
       ]),
-      DbVocabModel.aggregate([
+      DbCharacterModel.aggregate([
         ...conds,
         { $count: 'count' }
       ])
@@ -124,10 +110,11 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
 
   f.post('/random', {
     schema: {
-      tags: ['vocab'],
-      summary: 'Randomize a vocab',
+      tags: ['kanji'],
+      summary: 'Randomize a Kanji',
       body: {
         type: 'object',
+        required: ['cond'],
         properties: {
           cond: { type: 'object' }
         }
@@ -154,10 +141,11 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
     }
   }, async (req) => {
     const { cond } = req.body
-    const r = (await DbVocabModel.aggregate([
-      ...(cond ? [
-        { $match: cond }
-      ] : []),
+
+    const r = (await DbCharacterModel.aggregate([
+      {
+        $match: cond
+      },
       {
         $sample: { size: 1 }
       }
