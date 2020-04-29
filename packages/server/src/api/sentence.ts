@@ -133,7 +133,12 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
 
     const conds = [
       {
-        $match: cond
+        $match: {
+          $and: [
+            cond,
+            { lang: 'jpn' }
+          ]
+        }
       },
       {
         $lookup: {
@@ -229,13 +234,50 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
       }
     }
   }, async (req) => {
-    const { cond } = req.body
+    const { cond = {} } = req.body
     const r = (await DbSentenceModel.aggregate([
       ...(cond ? [
-        { $match: cond }
+        {
+          $match: {
+            $and: [
+              cond,
+              { lang: 'jpn' }
+            ]
+          }
+        }
       ] : []),
       {
         $sample: { size: 1 }
+      },
+      {
+        $lookup: {
+          from: 'translation',
+          localField: '_id',
+          foreignField: 'sentenceId',
+          as: 't'
+        }
+      },
+      {
+        $lookup: {
+          from: 'sentence',
+          localField: 't.translationId',
+          foreignField: '_id',
+          as: 's'
+        }
+      },
+      {
+        $match: {
+          $or: [
+            { 's.lang': 'eng' },
+            { 's.lang': { $exists: false } }
+          ]
+        }
+      },
+      {
+        $unwind: {
+          path: '$s',
+          preserveNullAndEmptyArrays: true
+        }
       },
       {
         $lookup: {

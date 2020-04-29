@@ -137,15 +137,12 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
           type: 'object',
           properties: {
             result: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  kanji: { type: 'array', items: { type: 'string' } },
-                  readings: { type: 'array', items: { type: 'string' } },
-                  info: { type: 'array', items: { type: 'string' } },
-                  meanings: { type: 'array', items: { type: 'string' } }
-                }
+              type: 'object',
+              properties: {
+                kanji: { type: 'array', items: { type: 'string' } },
+                readings: { type: 'array', items: { type: 'string' } },
+                info: { type: 'array', items: { type: 'string' } },
+                meanings: { type: 'array', items: { type: 'string' } }
               }
             }
           }
