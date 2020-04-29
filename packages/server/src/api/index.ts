@@ -4,7 +4,7 @@ import cors from 'fastify-cors'
 
 import libRouter from './lib'
 import sentenceRouter from './sentence'
-// import vocabRouter from './vocab'
+import vocabRouter from './vocab'
 // import hanziRouter from './hanzi'
 
 export default (f: FastifyInstance, _: any, next: () => void) => {
@@ -35,7 +35,7 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
 
   f.register(libRouter, { prefix: '/lib' })
   f.register(sentenceRouter, { prefix: '/sentence' })
-  // f.register(vocabRouter, { prefix: '/vocab' })
+  f.register(vocabRouter, { prefix: '/vocab' })
   // f.register(hanziRouter, { prefix: '/hanzi' })
 
   next()

@@ -34,3 +34,12 @@ class DbVocab {
 }
 
 export const DbVocabModel = getModelForClass(DbVocab, { schemaOptions: { collection: 'vocab' } })
+
+class DbCharacter {
+  @prop() kanji!: string
+  @prop() readings!: string[]
+  @prop() info!: string[]
+  @prop() meanings!: string[]
+}
+
+export const DbCharacterModel = getModelForClass(DbCharacter, { schemaOptions: { collection: 'character' } })

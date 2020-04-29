@@ -2,38 +2,25 @@ import fs from 'fs'
 
 import csvParser from 'csv-parser'
 import mongoose from 'mongoose'
-import MeCab from 'mecab-lite'
 
 import 'log-buffer'
 
 import { DbTranslationModel, DbSentenceTagModel, DbSentenceModel } from '../src/db/mongo'
 
 export async function uploadSentence (): Promise<number[]> {
-  const mc = new MeCab()
-
   return new Promise((resolve, reject) => {
     const langs = new Set<string>(['cmn', 'jpn', 'eng'])
     const sentences: any[] = []
     const ids: number[] = []
 
-    fs.createReadStream('/Downloads/sentences.csv', 'utf8')
+    fs.createReadStream('/Users/patarapolw/Downloads/sentences.csv', 'utf8')
       .pipe(csvParser({
         separator: '\t',
         headers: ['_id', 'lang', 'text']
       }))
       .on('data', async (data) => {
         if (langs.has(data.lang)) {
-          if (data.lang === 'jpn') {
-            const segments = mc.wakatigakiSync(data.text)
-            // console.log(segments)
-            sentences.push({
-              ...data,
-              segments
-            })
-          } else {
-            sentences.push(data)
-          }
-
+          sentences.push(data)
           ids.push(data._id)
         }
 
@@ -115,10 +102,10 @@ async function main () {
     useCreateIndex: true
   })
 
-  await uploadSentence()
-  // const ids = await uploadSentence()
-  // await uploadTranslation(ids)
-  // await uploadTag(ids)
+  // await uploadSentence()
+  const ids = await uploadSentence()
+  await uploadTranslation(ids)
+  await uploadTag(ids)
 
   client.disconnect()
 }
