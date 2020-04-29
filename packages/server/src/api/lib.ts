@@ -7,7 +7,7 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
   f.post('/split', {
     schema: {
       tags: ['lib'],
-      summary: 'Cut Japanese text into segments',
+      summary: 'Cut Japanese text into segments (with MeCab)',
       body: {
         type: 'object',
         required: ['entry'],

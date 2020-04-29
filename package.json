@@ -6,6 +6,7 @@
   "scripts": {
     "start": "docker run -e MONGO_URI -p 8080:8080 jpdiary",
     "build": "docker build -t jpdiary .",
+    "deploy": "heroku container:push web",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

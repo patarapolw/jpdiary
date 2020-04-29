@@ -205,7 +205,7 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
   f.post('/random', {
     schema: {
       tags: ['sentence'],
-      summary: 'Randomize a sentence given a limited set of Kanji',
+      summary: 'Randomize a sentence',
       body: {
         type: 'object',
         properties: {

@@ -21,11 +21,12 @@ RUN echo "dicdir = /usr/local/lib/mecab/dic/ipadic" > /usr/local/etc/mecabrc
 RUN mkdir -p /server
 WORKDIR /server
 COPY packages/server/package.json packages/server/package-lock.json ./
+RUN apk add python
 RUN npm i
 COPY packages/server .
 RUN npm run build
 RUN npm prune
-RUN apk del alpine-sdk
+RUN apk del alpine-sdk python
 
 EXPOSE 8080
 
