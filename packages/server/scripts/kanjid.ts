@@ -2,12 +2,37 @@ import fs from 'fs'
 
 // @ts-ignore
 import { Iconv } from 'iconv'
-import mongoose from 'mongoose'
 import XRegExp from 'xregexp'
+import sqlite3 from 'better-sqlite3'
 
 import 'log-buffer'
 
-import { DbCharacterModel } from '../src/db/mongo'
+const db = sqlite3('assets/kanjidict.db')
+db.exec(/*sql*/`
+CREATE TABLE [entry] (
+  kanji     TEXT NOT NULL,
+  readings  TEXT NOT NULL, -- json
+  infos     TEXT NOT NULL, -- json
+  meanings  TEXT NOT NULL  -- json
+);
+`)
+
+const insertMany = (rs: any[]) => {
+  const mainStmt = db.prepare(/*sql*/`
+  INSERT INTO [entry] (kanji, readings, infos, meanings)
+  VALUES (@kanji, @readings, @infos, @meanings)
+  `)
+  db.transaction(() => {
+    for (const { kanji, readings, infos, meanings } of rs) {
+      mainStmt.run({
+        kanji,
+        readings: JSON.stringify(readings),
+        infos: JSON.stringify(infos),
+        meanings: JSON.stringify(meanings)
+      })
+    }
+  })
+}
 
 /**
  * - the KANJIDIC and KANJD212 files are text files with one line per kanji and the information fields
@@ -22,8 +47,6 @@ import { DbCharacterModel } from '../src/db/mongo'
  */
 async function readKanjiDic (src: string) {
   const rows: any[] = []
-  const promises: Promise<any>[] = []
-
   const parseRow = async (r: string) => {
     const [ks, remaining = ''] = r.split(/ (.*)$/g)
     if (!ks) {
@@ -33,66 +56,53 @@ async function readKanjiDic (src: string) {
     const kanji = ks
 
     const readings: string[] = []
-    const info: string[] = []
+    const infos: string[] = []
     const meanings = (remaining.match(/\{(.+?)\}/g) || []).map(r => r.slice(1, r.length - 1))
 
     remaining.replace(/\{.+?\}/g, '').split(' ').filter(r => r).map((r) => {
       if (XRegExp('[\\p{Hiragana}\\p{Katakana}]').test(r)) {
         readings.push(r)
       } else {
-        info.push(r)
+        infos.push(r)
       }
     })
 
     rows.push({
       kanji,
       readings,
-      info,
+      infos,
       meanings
     })
 
     if (rows.length > 1000) {
       const rs = rows.splice(0, 1000)
-      await DbCharacterModel.insertMany(rs)
+      insertMany(rs)
     }
   }
 
   return new Promise((resolve, reject) => {
     let s = ''
-    fs.createReadStream(`/Users/patarapolw/Dropbox/Chinese/${src}`)
+    fs.createReadStream(`/Users/patarapolw/Dropbox/database/raw/${src}`)
       .pipe(new Iconv('EUC-JP', 'UTF-8'))
       .on('data', (d: Buffer) => {
         s += d.toString()
         const rows = s.split('\n')
         s = rows.splice(rows.length - 1, 1)[0]
         rows.map((r) => {
-          promises.push(parseRow(r))
+          parseRow(r)
         })
       })
       .on('error', reject)
       .on('end', async () => {
-        promises.push(
-          parseRow(s),
-          DbCharacterModel.insertMany(rows)
-        )
-
-        await Promise.all(promises)
+        parseRow(s)
         resolve()
       })
   })
 }
 
 async function main () {
-  const client = await mongoose.connect(process.env.MONGO_URI!, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true
-  })
-
   await readKanjiDic('kanjidic')
   await readKanjiDic('kanjd212')
-
-  client.disconnect()
 }
 
 if (require.main === module) {

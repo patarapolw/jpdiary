@@ -2,11 +2,37 @@ import fs from 'fs'
 
 // @ts-ignore
 import { Iconv } from 'iconv'
-import mongoose from 'mongoose'
-
+import sqlite3 from 'better-sqlite3'
 import 'log-buffer'
 
-import { DbVocabModel } from '../src/db/mongo'
+const db = sqlite3('assets/edict.db')
+db.exec(/*sql*/`
+CREATE TABLE [entry] (
+  seq       TEXT NOT NULL UNIQUE,
+  kanjis    TEXT NOT NULL, -- json
+  readings  TEXT NOT NULL, -- json
+  infos     TEXT NOT NULL, -- json
+  meanings  TEXT NOT NULL  -- json
+);
+`)
+
+const insertMany = (rs: any[]) => {
+  const mainStmt = db.prepare(/*sql*/`
+  INSERT INTO [entry] (seq, kanjis, readings, infos, meanings)
+  VALUES (@seq, @kanjis, @readings, @infos, @meanings)
+  `)
+  db.transaction(() => {
+    for (const { seq, kanjis, readings, infos, meanings } of rs) {
+      mainStmt.run({
+        seq,
+        kanjis: JSON.stringify(kanjis),
+        readings: JSON.stringify(readings),
+        infos: JSON.stringify(infos),
+        meanings: JSON.stringify(meanings)
+      })
+    }
+  })
+}
 
 /**
  * KANJI-1;KANJI-2 [KANA-1;KANA-2] /(general information) (see xxxx) gloss/gloss/.../
@@ -20,15 +46,14 @@ import { DbVocabModel } from '../src/db/mongo'
  */
 async function readEdict () {
   const rows: any[] = []
-  const promises: Promise<any>[] = []
 
-  const parseRow = async (r: string) => {
+  const parseRow = (r: string) => {
     let [ks, remaining = ''] = r.split(/ (.*)$/g)
     if (!ks) {
       return
     }
 
-    const kanji = ks.split(';')
+    const kanjis = ks.split(';')
 
     let readings: string[] = []
     if (remaining.startsWith('[')) {
@@ -37,74 +62,61 @@ async function readEdict () {
       remaining = remaining1
     }
 
-    const info: string[] = []
+    const infos: string[] = []
     let meanings: string[] = []
-    let ent_seq: string | undefined
+    let seq = ''
     if (remaining.startsWith('/')) {
       meanings = remaining.slice(1).split('/').filter(r => r)
       if (meanings[0]) {
         meanings[0] = meanings[0].replace(/\((.+?)\)/g, (_, p1) => {
-          info.push(p1)
+          infos.push(p1)
           return ''
         }).trim()
       }
 
       const last = meanings[meanings.length - 1] || ''
       if (last.startsWith('EntL')) {
-        ent_seq = last
+        seq = last
         meanings.pop()
       }
     }
 
     rows.push({
-      kanji,
+      kanjis,
       readings,
-      info,
+      infos,
       meanings,
-      ent_seq
+      seq
     })
 
     if (rows.length > 1000) {
       const rs = rows.splice(0, 1000)
-      await DbVocabModel.insertMany(rs)
+      insertMany(rs)
     }
   }
 
   return new Promise((resolve, reject) => {
     let s = ''
-    fs.createReadStream('/Users/patarapolw/Dropbox/Chinese/edict2')
+    fs.createReadStream('/Users/patarapolw/Dropbox/database/raw/edict2')
       .pipe(new Iconv('EUC-JP', 'UTF-8'))
       .on('data', (d: Buffer) => {
         s += d.toString()
         const rows = s.split('\n')
         s = rows.splice(rows.length - 1, 1)[0]
         rows.map((r) => {
-          promises.push(parseRow(r))
+          parseRow(r)
         })
       })
       .on('error', reject)
       .on('end', async () => {
-        promises.push(
-          parseRow(s),
-          DbVocabModel.insertMany(rows)
-        )
-
-        await Promise.all(promises)
+        parseRow(s)
         resolve()
       })
   })
 }
 
 async function main () {
-  const client = await mongoose.connect(process.env.MONGO_URI!, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true
-  })
-
   await readEdict()
-
-  client.disconnect()
 }
 
 if (require.main === module) {

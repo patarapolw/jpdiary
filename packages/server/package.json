@@ -22,9 +22,11 @@
     "pino-pretty": "^4.0.0"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^5.4.0",
     "@types/mongoose": "^5.7.14",
     "@types/node": "^13.13.4",
     "@types/xregexp": "^4.3.0",
+    "better-sqlite3": "^7.0.1",
     "csv-parser": "^2.3.2",
     "iconv": "^3.0.0",
     "log-buffer": "0.0.3",
