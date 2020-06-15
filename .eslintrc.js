@@ -1,29 +1,20 @@
 module.exports = {
+  root: true,
   env: {
     browser: true,
-    es6: true,
     node: true
   },
   extends: [
-    'plugin:vue/essential',
-    'standard'
+    '@nuxtjs/eslint-config-typescript',
+    'prettier',
+    'prettier/vue',
+    'plugin:prettier/recommended',
+    'plugin:nuxt/recommended'
   ],
-  globals: {
-    Atomics: 'readonly',
-    SharedArrayBuffer: 'readonly'
-  },
-  parserOptions: {
-    ecmaVersion: 2018,
-    parser: '@typescript-eslint/parser',
-    sourceType: 'module'
-  },
   plugins: [
-    'vue',
-    '@typescript-eslint'
+    'prettier'
   ],
+  // add your custom rules here
   rules: {
-    'no-unused-vars': 0,
-    'spaced-comment': 0,
-    camelcase: 0
   }
 }
