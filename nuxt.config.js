@@ -1,13 +1,23 @@
 import fs from 'fs'
+import { spawnSync } from 'child_process'
 import dayjs from 'dayjs'
 import yaml from 'js-yaml'
 import dotProp from 'dot-prop-immutable'
-import { buildIndexes } from './scripts/build'
-import rawJson from './build/raw.json'
 
+// eslint-disable-next-line require-await
 export default async () => {
-  if (process.env.BUILD === '1' || process.argv.includes('build')) {
-    await buildIndexes()
+  if (process.env.BUILD === '1') {
+    spawnSync(
+      'node_modules/.bin/ts-node',
+      [
+        '-O',
+        '{"module": "commonjs", "noImplicitAny": false}',
+        'scripts/build.ts'
+      ],
+      {
+        stdio: 'inherit'
+      }
+    )
   }
 
   const env = yaml.safeLoad(fs.readFileSync('config.yml', 'utf8'))
@@ -31,11 +41,6 @@ export default async () => {
       ],
       link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
       script: [
-        {
-          src: 'https://platform.twitter.com/widgets.js',
-          async: true,
-          charset: 'utf-8'
-        },
         (() => {
           const sidebarTwitter = dotProp.get(env, 'sidebar.twitter')
           if (sidebarTwitter) {
@@ -85,7 +90,7 @@ export default async () => {
         {
           component: 'fa',
           suffix: true,
-          proIcons: {
+          freeIcons: {
             solid: ['faSearch', 'faCaretRight', 'faCaretLeft', 'faAt'],
             brands: [
               'faTwitter',
@@ -170,6 +175,7 @@ export default async () => {
       baseUrl: env.baseUrl,
       'author.url': dotProp.get(env, 'author.url'),
       'author.avatar': dotProp.get(env, 'author.avatar'),
+      'author.email': dotProp.get(env, 'author.email'),
       'author.name': dotProp.get(env, 'author.name'),
       tabJson: JSON.stringify(env.tab || []),
       sidebarJson: JSON.stringify(env.sidebar || {}),
@@ -180,13 +186,17 @@ export default async () => {
     },
     generate: {
       crawler: false,
-      routes() {
+      async routes() {
         const routes = ['/', '/blog']
 
         const blog = new Set()
         const tag = new Map()
 
-        const getUrl = (h: { slug: string; date?: Date }) => {
+        /**
+         *
+         * @param {{ slug: string; date?: Date }} h
+         */
+        const getUrl = (h) => {
           if (h.date) {
             const d = dayjs(h.date).toDate()
             return `/post/${d.getFullYear().toString()}/${(d.getMonth() + 1)
@@ -197,7 +207,8 @@ export default async () => {
           return `/post/${h.slug}`
         }
 
-        Object.entries<{ tag?: string[]; date?: Date }>(rawJson)
+        // { tag?: string[]; date?: Date }
+        Object.entries(await import('./build/raw.json'))
           .map(([slug, { tag, date }]) => ({
             slug,
             tag,
@@ -211,7 +222,10 @@ export default async () => {
             blog.add(p)
             routes.push(getUrl(p))
 
-            const ts: string[] = f.tag || []
+            /**
+             * @type {string[]}
+             */
+            const ts = f.tag || []
 
             ts.map((t) => {
               const ts = tag.get(t) || new Set()

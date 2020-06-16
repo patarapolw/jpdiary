@@ -11,7 +11,6 @@ import PostQuery from '@/components/PostQuery.vue'
     PostQuery
   },
   layout: 'blog',
-  // eslint-disable-next-line require-await
   async asyncData({ app }) {
     const ps = await app.$axios.$get('/serverMiddleware/search')
 

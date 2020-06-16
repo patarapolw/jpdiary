@@ -22,5 +22,5 @@ import PostQuery from '@/components/PostQuery.vue'
     }
   }
 })
-export default class Blog extends Vue {}
+export default class Home extends Vue {}
 </script>

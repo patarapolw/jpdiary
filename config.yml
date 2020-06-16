@@ -1,4 +1,14 @@
-comments:
+title: polv's Japanese diary
+banner: JpDiary
+baseUrl: https://jpdiary.polv.cc
+description: Tracking my Japanese learning progress, for at least a year
+author:
+  url: https://www.polv.cc
+  email: polv@polv.cc
+  name: Pacharapol Withayasakpunt
+analytics:
+  plausible: jpdiary.polv.cc
+comment:
   remark42:
     host: https://remark42.polv.cc
     siteId: jpdiary

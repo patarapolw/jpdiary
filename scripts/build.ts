@@ -84,3 +84,7 @@ export async function buildIndexes() {
     )
   )
 }
+
+if (require.main === module) {
+  buildIndexes()
+}
