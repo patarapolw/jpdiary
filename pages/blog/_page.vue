@@ -11,16 +11,20 @@ import PostQuery from '@/components/PostQuery.vue'
     PostQuery
   },
   layout: 'blog',
-  async asyncData({ app }) {
-    const ps = await app.$axios.$get('/serverMiddleware/search')
+  async asyncData({ app, params }) {
+    const ps = await app.$axios.$get(`/serverMiddleware/search`, {
+      params: {
+        offset: (parseInt(params.page) - 1) * 5
+      }
+    })
 
     return {
       defaults: {
-        count: ps.count,
-        posts: ps.result
+        count: ps!.count,
+        posts: ps!.result
       }
     }
   }
 })
-export default class Blog extends Vue {}
+export default class BlogPaged extends Vue {}
 </script>
