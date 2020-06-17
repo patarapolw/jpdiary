@@ -1,16 +1,17 @@
-import Document, { Html, Head, Main, NextScript } from 'next/document'
 import dotProp from 'dot-prop-immutable'
+import Document, { Head, Html, Main, NextScript } from 'next/document'
+
 import config from '@/theme-config.json'
 
 export default class MyDocument extends Document {
   render () {
     const sidebarTwitter = dotProp.get(config, 'sidebar.twitter')
-    const plausible = dotProp.get(config, 'analytics.plausible')
+    const plausible = config.analytics.plausible
 
     return (
       <Html lang="en">
         <Head>
-          <title data-title={config.title}>{config.title}</title>
+          <title>{config.title}</title>
           <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
           <meta httpEquiv="Content-Type" content="text/html;charset=UTF-8"/>
           <meta name="keywords" content={config.keywords.join(',')} />

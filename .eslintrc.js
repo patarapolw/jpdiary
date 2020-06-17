@@ -1,4 +1,9 @@
 module.exports = {
+  settings: {
+    react: {
+      version: 'detect'
+    }
+  },
   env: {
     browser: true,
     es2020: true,
@@ -20,11 +25,13 @@ module.exports = {
   plugins: [
     'react',
     '@typescript-eslint',
-    'jsx-a11y'
+    'jsx-a11y',
+    'simple-import-sort'
   ],
   rules: {
     'react/react-in-jsx-scope': 0,
     'jsx-a11y/anchor-is-valid': 0,
-    'no-unused-vars': 0
+    'no-unused-vars': 0,
+    'simple-import-sort/sort': 'error'
   }
 }

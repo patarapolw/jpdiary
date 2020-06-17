@@ -1,5 +1,5 @@
-import SparkMD5 from 'spark-md5'
 import qs from 'query-string'
+import SparkMD5 from 'spark-md5'
 
 export function escapeRegExp (s: string) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string

@@ -8,7 +8,7 @@ interface IProp {
   count: number
 }
 
-const Home = (defaults: IProp) => {
+const BlogPaged = (defaults: IProp) => {
   return (
     <BlogLayout>
       <PostQuery defaults={defaults} />
@@ -16,10 +16,14 @@ const Home = (defaults: IProp) => {
   )
 }
 
-export default Home
+export default BlogPaged
 
-export const getStaticProps = async (): Promise<{ props: IProp }> => {
-  const r = search()
+export const getStaticProps = async ({ params: { page } }: {
+  params: {
+    page: string
+  }
+}): Promise<{ props: IProp }> => {
+  const r = search({ offset: (parseInt(page) - 1) * 5 })
 
   return {
     props: {

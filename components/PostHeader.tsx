@@ -1,10 +1,10 @@
 import dayjs from 'dayjs'
 
-import { IPost } from '@/types/post'
-import sMargin from '@/styles/margin.module.scss'
-import sExtra from '@/styles/extra.module.scss'
-import config from '@/theme-config.json'
 import { getGravatarUrl } from '@/assets/util'
+import sExtra from '@/styles/extra.module.scss'
+import sMargin from '@/styles/margin.module.scss'
+import config from '@/theme-config.json'
+import { IPost } from '@/types/post'
 
 interface IProp {
   post: IPost

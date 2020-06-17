@@ -1,8 +1,8 @@
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import qs from 'query-string'
 
 import sMargin from '@/styles/margin.module.scss'
-import Link from 'next/link'
 
 interface IProp {
   current: number

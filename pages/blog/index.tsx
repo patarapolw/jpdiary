@@ -8,7 +8,7 @@ interface IProp {
   count: number
 }
 
-const Home = (defaults: IProp) => {
+const Blog = (defaults: IProp) => {
   return (
     <BlogLayout>
       <PostQuery defaults={defaults} />
@@ -16,7 +16,7 @@ const Home = (defaults: IProp) => {
   )
 }
 
-export default Home
+export default Blog
 
 export const getStaticProps = async (): Promise<{ props: IProp }> => {
   const r = search()

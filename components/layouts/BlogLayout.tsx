@@ -1,7 +1,8 @@
 import Link from 'next/link'
-import config from '@/theme-config.json'
-import sExtra from '@/styles/extra.module.scss'
 import { useState } from 'react'
+
+import sExtra from '@/styles/extra.module.scss'
+import config from '@/theme-config.json'
 
 interface IProp {
   children: React.ReactNode

@@ -1,14 +1,15 @@
-import { IPost } from '@/types/post'
-import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import qs from 'query-string'
+import { useEffect, useState } from 'react'
 
-import sMargin from '@/styles/margin.module.scss'
-import sExtra from '@/styles/extra.module.scss'
-import Empty from './Empty'
-import PostTeaser from './PostTeaser'
-import Pagination from './Pagination'
 import { normalizeArray } from '@/assets/util'
+import sExtra from '@/styles/extra.module.scss'
+import sMargin from '@/styles/margin.module.scss'
+import { IPost } from '@/types/post'
+
+import Empty from './Empty'
+import Pagination from './Pagination'
+import PostTeaser from './PostTeaser'
 
 interface IProp {
   defaults: {
@@ -27,7 +28,7 @@ const PostQuery = ({ defaults }: IProp) => {
   if (!isQReady) {
     useEffect(() => {
       (async () => {
-        const { count, result } = await fetch(`/.netlify/functions/search?${qs.stringify({
+        const { count, result } = await fetch(`/api/search?${qs.stringify({
           q,
           offset: (parseInt(normalizeArray(page) || '1') - 1) * 5,
           tag

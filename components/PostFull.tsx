@@ -1,13 +1,14 @@
-import { Component } from 'react'
 import Link from 'next/link'
 import Router from 'next/router'
+import { Component } from 'react'
 
-import sMargin from '@/styles/margin.module.scss'
-import sExtra from '@/styles/extra.module.scss'
-import PostHeader from './PostHeader'
 import { fixDOM } from '@/assets/fix-html'
 import { initRemark42 } from '@/assets/remark42'
+import sExtra from '@/styles/extra.module.scss'
+import sMargin from '@/styles/margin.module.scss'
 import { IPost } from '@/types/post'
+
+import PostHeader from './PostHeader'
 
 interface IProp {
   post: IPost
