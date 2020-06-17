@@ -53,15 +53,23 @@ const PostQuery = ({ defaults }: IProp) => {
         posts.length > 0 ? (
           <article>
             {posts.map((p) => (
-              <PostTeaser post={p} key={p.slug} />
+              <div className="post-query-entry" key={p.slug}>
+                <PostTeaser post={p} />
+              </div>
             ))}
             <Pagination
               current={parseInt(normalizeArray(page) || '1')}
-              total={count}
+              total={Math.ceil(count / 5)}
               q={normalizeArray(q)} />
           </article>
         ) : <Empty />
       ) : null /* Loading */}
+
+      <style jsx>{`
+      .post-query-entry {
+        margin-top: 1rem;
+      }
+      `}</style>
     </section>
   )
 }

@@ -1,5 +1,6 @@
 import { Head } from 'next/document'
 
+import rawJson from '@/build/raw.json'
 import PostFull from '@/components/PostFull'
 import post from '@/scripts/post'
 import config from '@/theme-config.json'
@@ -22,12 +23,29 @@ const PostAtRoot = (p: IPost) => {
 
 export default PostAtRoot
 
-export const getStaticProps = async ({ params: { slug } }: {
+export const getStaticPaths = async () => {
+  return {
+    paths: Object.entries(rawJson).map(([slug, { date }]) => {
+      if (date) {
+        return
+      }
+
+      return {
+        params: {
+          y: slug
+        }
+      }
+    }).filter((el) => el),
+    fallback: false
+  }
+}
+
+export const getStaticProps = async ({ params: { y } }: {
   params: {
-    slug: string
+    y: string
   }
 }): Promise<{ props: IPost }> => {
-  const r = post({ slug })
+  const r = post({ slug: y })
 
   return {
     props: r

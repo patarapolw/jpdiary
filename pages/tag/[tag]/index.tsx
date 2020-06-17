@@ -1,5 +1,6 @@
 import { Head } from 'next/document'
 
+import tagJson from '@/build/tag.json'
 import BlogLayout from '@/components/layouts/BlogLayout'
 import PostQuery from '@/components/PostQuery'
 import search from '@/scripts/search'
@@ -26,6 +27,19 @@ const Tag = ({ posts, count, tag }: IProp) => {
 }
 
 export default Tag
+
+export const getStaticPaths = async () => {
+  return {
+    paths: Object.entries(tagJson).map(([tag]) => {
+      return {
+        params: {
+          tag
+        }
+      }
+    }),
+    fallback: false
+  }
+}
 
 export const getStaticProps = async ({ params: { tag } }: {
   params: {

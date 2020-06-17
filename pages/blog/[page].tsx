@@ -1,3 +1,4 @@
+import rawJson from '@/build/raw.json'
 import BlogLayout from '@/components/layouts/BlogLayout'
 import PostQuery from '@/components/PostQuery'
 import search from '@/scripts/search'
@@ -17,6 +18,19 @@ const BlogPaged = (defaults: IProp) => {
 }
 
 export default BlogPaged
+
+export const getStaticPaths = async () => {
+  return {
+    paths: Array(Math.ceil(Object.keys(rawJson).length / 5) - 1).fill(null).map((_, i) => {
+      return {
+        params: {
+          page: (i + 2).toString()
+        }
+      }
+    }),
+    fallback: false
+  }
+}
 
 export const getStaticProps = async ({ params: { page } }: {
   params: {

@@ -43,7 +43,7 @@ const PostTeaser = ({ post }: IProp) => {
       </article>
 
       <style jsx>{`
-      .header-link:hover {
+      .header-link h2:hover {
         color: red;
       }
 

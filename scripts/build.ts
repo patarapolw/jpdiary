@@ -13,7 +13,7 @@ import MakeHtml from './make-html'
 
 export async function buildIndexes () {
   const buildPath = (p: string) => path.join(__dirname, '../build', p)
-  const contentPath = (p: string) => path.join(__dirname, '../content', p)
+  const contentPath = (p: string) => path.join(__dirname, '../_posts', p)
 
   await new Promise((resolve, reject) => {
     rimraf(buildPath('*.json'), (e) => (e ? reject(e) : resolve()))

@@ -1,5 +1,6 @@
 import { Head } from 'next/document'
 
+import tagJson from '@/build/tag.json'
 import BlogLayout from '@/components/layouts/BlogLayout'
 import PostQuery from '@/components/PostQuery'
 import search from '@/scripts/search'
@@ -26,6 +27,20 @@ const TagPaged = ({ posts, count, tag }: IProp) => {
 }
 
 export default TagPaged
+
+export const getStaticPaths = async () => {
+  return {
+    paths: Object.entries(tagJson).map(([tag, count]) => {
+      return Array(Math.ceil(count / 5) - 1).fill(tag).map((t, i) => ({
+        params: {
+          tag: t,
+          page: (i + 2).toString()
+        }
+      }))
+    }).reduce((prev, c) => [...prev, ...c], []),
+    fallback: false
+  }
+}
 
 export const getStaticProps = async ({ params: { tag, page } }: {
   params: {

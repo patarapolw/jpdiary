@@ -6,8 +6,9 @@
   "author": "Pacharapol Withayasakpunt <polv@polv.cc>",
   "license": "MIT",
   "scripts": {
-    "dev": "next",
-    "build": "next build",
+    "db:build": "ts-node -O '{\"module\": \"commonjs\"}' scripts/build.ts",
+    "dev": "yarn db:build && next",
+    "build": "yarn db:build && next build",
     "start": "next start",
     "lint:fix": "eslint --fix '**'"
   },
@@ -57,6 +58,7 @@
     "query-string": "^6.13.1",
     "sass": "^1.26.8",
     "spark-md5": "^3.0.1",
+    "ts-node": "^8.10.2",
     "typescript": "^3.9.5"
   },
   "engines": {

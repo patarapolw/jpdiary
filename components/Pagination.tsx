@@ -16,8 +16,7 @@ const Pagination = ({ current: page, total, q }: IProp) => {
   const setPageUrl = (p: number) => {
     const path0 = pathname.replace(/\/(\d+)?$/, '')
     return `${path0 || '/blog'}${p === 1 ? '' : `/${p}`}?${qs.stringify({
-      q,
-      page: p.toString()
+      q
     })}`
   }
 
