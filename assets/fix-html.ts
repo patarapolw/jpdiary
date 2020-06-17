@@ -1,6 +1,6 @@
 import Prism from 'prismjs'
 
-export function fixDOM(dom: Element) {
+export function fixDOM (dom: Element) {
   dom.querySelectorAll('iframe').forEach((el) => {
     const w = el.getAttribute('width')
     const h = el.getAttribute('height')

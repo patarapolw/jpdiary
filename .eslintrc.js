@@ -1,20 +1,30 @@
 module.exports = {
-  root: true,
   env: {
     browser: true,
+    es2020: true,
     node: true
   },
   extends: [
-    '@nuxtjs/eslint-config-typescript',
-    'prettier',
-    'prettier/vue',
-    'plugin:prettier/recommended',
-    'plugin:nuxt/recommended'
+    'plugin:react/recommended',
+    'standard',
+    'plugin:jsx-a11y/recommended'
   ],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaFeatures: {
+      jsx: true
+    },
+    ecmaVersion: 11,
+    sourceType: 'module'
+  },
   plugins: [
-    'prettier'
+    'react',
+    '@typescript-eslint',
+    'jsx-a11y'
   ],
   rules: {
-    'prefer-const': 0
+    'react/react-in-jsx-scope': 0,
+    'jsx-a11y/anchor-is-valid': 0,
+    'no-unused-vars': 0
   }
 }

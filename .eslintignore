@@ -1,0 +1,9 @@
+*.*
+!*.ts
+!*.js
+!*.tsx
+!*.jsx
+node_modules
+/.*/
+
+!.eslintrc.js
