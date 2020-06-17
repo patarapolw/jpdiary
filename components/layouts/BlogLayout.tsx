@@ -5,7 +5,7 @@ import sExtra from '@/styles/extra.module.scss'
 import config from '@/theme-config.json'
 
 interface IProp {
-  children: React.ReactNode
+  children: any
 }
 
 const BlogLayout = ({ children }: IProp) => {
