@@ -158,31 +158,40 @@ export default async () => {
       // extend(config, ctx) {}
     },
     env: {
-      'comment.remark42.host': dotProp.get(env, 'comment.remark42.host'),
-      'comment.remark42.siteId': dotProp.get(env, 'comment.remark42.siteId'),
+      'comment.remark42.host': dotProp.get(env, 'comment.remark42.host', ''),
+      'comment.remark42.siteId': dotProp.get(
+        env,
+        'comment.remark42.siteId',
+        ''
+      ),
       'comment.remark42.maxShownComments': dotProp.get(
         env,
-        'comment.remark42.maxShownComments'
+        'comment.remark42.maxShownComments',
+        ''
       ),
-      'comment.remark42.theme': dotProp.get(env, 'comment.remark42.theme'),
-      'comment.remark42.locale': dotProp.get(env, 'comment.remark42.locale'),
-      'social.twitter': dotProp.get(env, 'social.twitter'),
-      'social.reddit': dotProp.get(env, 'social.reddit'),
-      'social.quora': dotProp.get(env, 'social.quora'),
-      'social.github': dotProp.get(env, 'social.github'),
+      'comment.remark42.theme': dotProp.get(env, 'comment.remark42.theme', ''),
+      'comment.remark42.locale': dotProp.get(
+        env,
+        'comment.remark42.locale',
+        ''
+      ),
+      'social.twitter': dotProp.get(env, 'social.twitter', ''),
+      'social.reddit': dotProp.get(env, 'social.reddit', ''),
+      'social.quora': dotProp.get(env, 'social.quora', ''),
+      'social.github': dotProp.get(env, 'social.github', ''),
       title: env.title,
       banner: env.banner,
       baseUrl: env.baseUrl,
-      'author.url': dotProp.get(env, 'author.url'),
-      'author.avatar': dotProp.get(env, 'author.avatar'),
-      'author.email': dotProp.get(env, 'author.email'),
-      'author.name': dotProp.get(env, 'author.name'),
+      'author.url': dotProp.get(env, 'author.url', ''),
+      'author.avatar': dotProp.get(env, 'author.avatar', ''),
+      'author.email': dotProp.get(env, 'author.email', ''),
+      'author.name': dotProp.get(env, 'author.name', ''),
       tabJson: JSON.stringify(env.tab || []),
       sidebarJson: JSON.stringify(env.sidebar || {}),
-      'tag.listJson': dotProp.get(env, 'sidebar.tagCloud')
+      'tag.listJson': dotProp.get(env, 'sidebar.tagCloud', '')
         ? fs.readFileSync('./build/tag.json', 'utf-8')
         : undefined,
-      'tag.exclude': dotProp.get('env', 'tag.exclude')
+      'tag.exclude': dotProp.get('env', 'tag.exclude', '')
     },
     generate: {
       crawler: false,
