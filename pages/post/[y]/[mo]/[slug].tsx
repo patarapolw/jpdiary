@@ -1,4 +1,4 @@
-import { Head } from 'next/document'
+import Head from "next/head"
 
 import rawJson from '@/build/raw.json'
 import PostFull from '@/components/PostFull'
