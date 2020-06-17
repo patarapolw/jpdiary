@@ -1,16 +1,47 @@
+import { graphql } from 'gatsby'
+
 import BlogLayout from '@/components/layouts/BlogLayout'
 import PostQuery from '@/components/PostQuery'
+import SEO from '@/components/seo'
 
-interface IProp {
-  posts: any[]
-  count: number
-}
+export const pageQuery = graphql`
+  query BlogPostQuery($skip: Int!) {
+    allMdx(
+      sort: { fields: [frontmatter___date], order: DESC }
+      limit: 5
+      skip: $skip
+    ) {
+      edges {
+        node {
+          excerpt(truncate: true)
+          frontmatter {
+            title
+            tag
+            date
+          }
+          rawBody
+        }
+      }
+    }
+  }
+`
 
-const Blog = (defaults: IProp) => {
+const Blog = ({
+  pageContext: {
+    page
+  }
+}: {
+  pageContext: {
+    page: number
+  }
+}) => {
   return (
-    <BlogLayout>
-      <PostQuery defaults={defaults} />
-    </BlogLayout>
+    <>
+      <SEO />
+      <BlogLayout>
+        <PostQuery page={page} />
+      </BlogLayout>
+    </>
   )
 }
 

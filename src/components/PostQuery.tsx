@@ -1,20 +1,22 @@
 import styled from '@emotion/styled'
+import { graphql } from 'gatsby'
 import qs from 'query-string'
 import { useEffect, useState } from 'react'
+import tw from 'tailwind.macro'
 
 import { normalizeArray } from '@/lib/util'
-import sExtra from '@/styles/extra.module.scss'
-import sMargin from '@/styles/margin.module.scss'
 
 import Empty from './Empty'
 import Pagination from './Pagination'
 import PostTeaser from './PostTeaser'
 
+const query = graphql`
+
+`
+
 const PostQuery = (props: {
-  defaults: {
-    posts: any[]
-    count: number
-  }
+  page: number
+  tag?: string
 }) => {
   const { defaults } = props
 
@@ -44,13 +46,21 @@ const PostQuery = (props: {
     .post-query-entry {
       margin-top: 1rem;
     }
+
+    header {
+      ${tw`m-4`}
+    }
+
+    .tw-text-bold {
+      ${tw`text-bold`}
+    }
   `
 
   return (
     <Section>
       {tag ? (
-        <header className={sMargin['m-1']}>
-          Tag: <span className={sExtra.bold}>{tag}</span>
+        <header>
+          Tag: <span className="tw-text-bold">{tag}</span>
         </header>
       ) : null}
 

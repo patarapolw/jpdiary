@@ -1,5 +1,4 @@
 const Prism = require('prismjs')
-
 const themeConfig = require('./theme-config.json')
 
 function fixDOM (dom) {
@@ -16,7 +15,7 @@ function fixDOM (dom) {
   return dom
 }
 
-export function initRemark42 (url) {
+function initRemark42 (url) {
   // eslint-disable-next-line camelcase
   const remark_config = {
     host: themeConfig.comment.remark42.host, // hostname of remark server, same as REMARK_URL in backend config, e.g. "https://demo.remark42.com"
