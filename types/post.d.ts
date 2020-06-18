@@ -5,6 +5,5 @@ export interface IPost {
   tag?: string[]
   date?: string | Date
   excerpt: string
-  excerptHtml: string
-  html: string
+  markdown: string
 }

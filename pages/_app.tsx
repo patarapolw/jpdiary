@@ -1,3 +1,7 @@
+import 'bulma/bulma.sass'
+import '@fortawesome/fontawesome-free/css/all.css'
+import '@/styles/tailwind.css'
+
 import { AppProps } from 'next/app'
 import Head from 'next/head'
 

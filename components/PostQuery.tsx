@@ -3,22 +3,18 @@ import qs from 'query-string'
 import { useEffect, useState } from 'react'
 
 import { normalizeArray } from '@/assets/util'
-import sExtra from '@/styles/extra.module.scss'
-import sMargin from '@/styles/margin.module.scss'
 import { IPost } from '@/types/post'
 
 import Empty from './Empty'
 import Pagination from './Pagination'
 import PostTeaser from './PostTeaser'
 
-interface IProp {
+const PostQuery = ({ defaults }: {
   defaults: {
     posts: IPost[]
     count: number
   }
-}
-
-const PostQuery = ({ defaults }: IProp) => {
+}) => {
   const [count, setCount] = useState(defaults.count)
   const [posts, setPosts] = useState(defaults.posts)
 
@@ -44,8 +40,8 @@ const PostQuery = ({ defaults }: IProp) => {
   return (
     <section>
       {tag ? (
-        <header className={sMargin['m-1']}>
-          Tag: <span className={sExtra.bold}>{tag}</span>
+        <header className="tw-m-4">
+          Tag: <span className="tw-text-bold">{tag}</span>
         </header>
       ) : null}
 

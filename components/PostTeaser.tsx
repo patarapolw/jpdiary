@@ -4,12 +4,11 @@ import Link from 'next/link'
 import { IPost } from '@/types/post'
 
 import PostHeader from './PostHeader'
+import RemarkReact from './RemarkReact'
 
-interface IProp {
+const PostTeaser = ({ post }: {
   post: IPost
-}
-
-const PostTeaser = ({ post }: IProp) => {
+}) => {
   const postUrl = (() => {
     const { date, slug } = post
     if (date) {
@@ -38,7 +37,7 @@ const PostTeaser = ({ post }: IProp) => {
             </a>
           </Link>
 
-          <div className="content" dangerouslySetInnerHTML={{ __html: post.excerptHtml }}></div>
+          <RemarkReact markdown={post.excerpt} />
         </div>
       </article>
 

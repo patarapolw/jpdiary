@@ -1,16 +1,12 @@
 import dayjs from 'dayjs'
 
 import { getGravatarUrl } from '@/assets/gravatar'
-import sExtra from '@/styles/extra.module.scss'
-import sMargin from '@/styles/margin.module.scss'
 import config from '@/theme-config.json'
 import { IPost } from '@/types/post'
 
-interface IProp {
+const PostHeader = ({ post }: {
   post: IPost
-}
-
-const PostHeader = ({ post }: IProp) => {
+}) => {
   const dateString = (() => {
     const djs = post.date ? dayjs(post.date) : null
     if (djs && djs.isValid()) {
@@ -20,7 +16,7 @@ const PostHeader = ({ post }: IProp) => {
   })()
 
   return (
-    <section className={[sMargin['mb-0_5'], 'post-meta'].join(' ')}>
+    <section className="tw-mb-2 post-meta">
       <a className="post-meta-author" href={config.author.url} target="_blank" rel="noreferrer noopener nofollow">
         <span>
           <img src={getGravatarUrl(config.author.email, 64)} alt={config.author.name} />
@@ -28,7 +24,7 @@ const PostHeader = ({ post }: IProp) => {
         <span>{config.author.name}</span>
       </a>
 
-      <div className={sExtra['flex-grow-1']}></div>
+      <div className="tw-flex-grow"></div>
 
       {dateString ? <div>{dateString}</div> : null}
 
