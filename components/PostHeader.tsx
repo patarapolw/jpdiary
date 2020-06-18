@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 
-import { getGravatarUrl } from '@/assets/util'
+import { getGravatarUrl } from '@/assets/gravatar'
 import sExtra from '@/styles/extra.module.scss'
 import sMargin from '@/styles/margin.module.scss'
 import config from '@/theme-config.json'
