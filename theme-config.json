@@ -20,7 +20,8 @@
   "comment": {
     "remark42": {
       "host": "https://remark42.polv.cc",
-      "siteId": "jpdiary"
+      "siteId": "jpdiary",
+      "locale": "en"
     }
   }
 }
