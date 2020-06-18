@@ -2,6 +2,23 @@ const fs = require('fs')
 const path = require('path')
 const lunr = require('lunr')
 
+exports.createSchemaCustomization = ({ actions }) => {
+  const { createTypes } = actions
+
+  createTypes(/* graphql */`
+    type Mdx implements Node {
+      frontmatter: MdxFrontmatter!
+    }
+
+    type MdxFrontmatter {
+      title: String!
+      date: String
+      tag: [String!]
+      image: String
+    }
+  `)
+}
+
 exports.createPages = async ({ graphql, actions }) => {
   const {
     data: {
@@ -9,7 +26,7 @@ exports.createPages = async ({ graphql, actions }) => {
         edges
       }
     }
-  } = await graphql(`
+  } = await graphql(/* graphql */`
     query {
       allMdx {
         edges {
@@ -22,9 +39,7 @@ exports.createPages = async ({ graphql, actions }) => {
               date
             }
             rawBody
-            fields {
-              fileSlug: slug
-            }
+            body
           }
         }
       }
@@ -38,7 +53,7 @@ exports.createPages = async ({ graphql, actions }) => {
 
   edges.map(({
     node: {
-      id,
+      excerpt,
       fileAbsolutePath,
       frontmatter: {
         title,
@@ -46,7 +61,7 @@ exports.createPages = async ({ graphql, actions }) => {
         date
       },
       rawBody,
-      excerpt
+      body
     }
   }) => {
     (postTag || []).map((t) => {
@@ -69,17 +84,20 @@ exports.createPages = async ({ graphql, actions }) => {
       title,
       tag: postTag,
       excerpt,
-      rawExcerpt: rawBody.split(/<!-- excerpt(?:_separator)? -->/)[0]
+      excerptBody: rawBody.split(/<!-- excerpt -->/)[0]
     })
 
     createPage({
       path: date ? `/post/${y}/${mo}/${slug}` : `/post/${slug}`,
       component: path.resolve('./src/templates/post.tsx'),
       context: {
-        id,
-        y,
-        mo,
-        slug
+        slug,
+        title,
+        tag: postTag,
+        date,
+        excerptBody: rawBody.split(/<!-- excerpt -->/)[0]
+          .replace(/^---\n.*?\n---\n/s, ''),
+        body
       }
     })
   })
@@ -111,9 +129,9 @@ exports.createPages = async ({ graphql, actions }) => {
     Array(count).fill(null).map((_, i) => {
       createPage({
         path: i ? `/tag/${t}/${i + 1}` : `/tag/${t}`,
-        component: path.resolve('./src/templates/tag.tsx'),
+        component: path.resolve('./src/templates/tagged.tsx'),
         context: {
-          page: i + 1,
+          skip: i * 5,
           tag: t
         }
       })
@@ -125,7 +143,7 @@ exports.createPages = async ({ graphql, actions }) => {
       path: i ? `/blog/${i + 1}` : '/blog',
       component: path.resolve('./src/templates/blog.tsx'),
       context: {
-        page: i + 1
+        skip: i * 5
       }
     })
   })
@@ -134,7 +152,7 @@ exports.createPages = async ({ graphql, actions }) => {
     path: '/',
     component: path.resolve('./src/templates/blog.tsx'),
     context: {
-      page: 1
+      skip: 0
     }
   })
 }

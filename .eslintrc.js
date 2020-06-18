@@ -29,7 +29,6 @@ module.exports = {
     'simple-import-sort'
   ],
   rules: {
-    'react/react-in-jsx-scope': 0,
     'jsx-a11y/anchor-is-valid': 0,
     'no-unused-vars': 0,
     'simple-import-sort/sort': 'error'

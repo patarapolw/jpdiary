@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
 import { Link } from 'gatsby'
 import qs from 'query-string'
+import React from 'react'
 import tw from 'tailwind.macro'
 
 const Pagination = (props: {
@@ -9,7 +10,7 @@ const Pagination = (props: {
   q: string
 }) => {
   const { current: page, total, q } = props
-  const { location: { pathname } } = props as any
+  const { pathname } = (props as any).location as Location
 
   const setPageUrl = (p: number) => {
     const path0 = pathname.replace(/\/(\d+)?$/, '')

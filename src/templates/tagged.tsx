@@ -6,8 +6,9 @@ import PostQuery from '@/components/PostQuery'
 import SEO from '@/components/seo'
 
 export const pageQuery = graphql`
-  query BlogPostQuery($skip: Int!) {
+  query TaggedPostQuery($skip: Int!, $tag: String!) {
     allMdx(
+      filter: { frontmatter: { tag: { eq: $tag } } }
       sort: { fields: [frontmatter___date], order: DESC }
       limit: 5
       skip: $skip
@@ -30,7 +31,7 @@ export const pageQuery = graphql`
   }
 `
 
-const Blog = ({
+const Tagged = ({
   data: {
     allMdx: {
       edges,
@@ -38,6 +39,9 @@ const Blog = ({
         totalCount: count
       }
     }
+  },
+  pageContext: {
+    tag
   }
 }: {
   data: {
@@ -57,11 +61,14 @@ const Blog = ({
         totalCount: number
       }
     }
+  },
+  pageContext: {
+    tag: string
   }
 }) => {
   return (
     <>
-      <SEO />
+      <SEO title={`Tag: ${tag}`} />
       <BlogLayout>
         <PostQuery defaults={{
           posts: edges.map((el) => {
@@ -80,4 +87,4 @@ const Blog = ({
   )
 }
 
-export default Blog
+export default Tagged

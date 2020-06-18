@@ -1,7 +1,6 @@
 import styled from '@emotion/styled'
-import { graphql } from 'gatsby'
 import qs from 'query-string'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import tw from 'tailwind.macro'
 
 import { normalizeArray } from '@/lib/util'
@@ -10,13 +9,17 @@ import Empty from './Empty'
 import Pagination from './Pagination'
 import PostTeaser from './PostTeaser'
 
-const query = graphql`
-
-`
-
 const PostQuery = (props: {
-  page: number
-  tag?: string
+  defaults: {
+    posts: {
+      title: string
+      date?: string
+      tag?: string[]
+      excerptBody: string
+      slug: string
+    }[]
+    count: number
+  }
 }) => {
   const { defaults } = props
 
@@ -29,7 +32,7 @@ const PostQuery = (props: {
   if (!isQReady) {
     useEffect(() => {
       (async () => {
-        const { count, result } = await fetch(`/api/search?${qs.stringify({
+        const { count, result } = await fetch(`/.netlify/function/search?${qs.stringify({
           q,
           offset: (parseInt(normalizeArray(page) || '1') - 1) * 5,
           tag
@@ -51,8 +54,8 @@ const PostQuery = (props: {
       ${tw`m-4`}
     }
 
-    .tw-text-bold {
-      ${tw`text-bold`}
+    .tw-font-bold {
+      ${tw`font-bold`}
     }
   `
 
@@ -60,7 +63,7 @@ const PostQuery = (props: {
     <Section>
       {tag ? (
         <header>
-          Tag: <span className="tw-text-bold">{tag}</span>
+          Tag: <span className="tw-font-bold">{tag}</span>
         </header>
       ) : null}
 

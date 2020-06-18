@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
 import dayjs from 'dayjs'
 import { useStaticQuery } from 'gatsby'
+import React from 'react'
 import tw from 'tailwind.macro'
 
 import { getGravatarUrl } from '@/lib/gravatar'

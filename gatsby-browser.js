@@ -65,20 +65,33 @@ function initRemark42 (url) {
   })(remark_config.components || ['embed'])
 }
 
-exports.onRouteUpdate = ({ location }) => {
-  const mainEl = document.querySelector('main')
-  if (mainEl) {
-    fixDOM(mainEl)
-  }
+exports.onClientEntry = () => {
+  const observer = new MutationObserver((muts) => {
+    muts.forEach((mut) => {
+      mut.addedNodes.forEach((addedNode) => {
+        if (addedNode instanceof HTMLElement) {
+          if (addedNode.matches('main')) {
+            fixDOM(addedNode)
+          } else if (addedNode.matches('#remark42')) {
+            const { REMARK42 } = window
+            if (REMARK42) {
+              REMARK42.destroy()
+            }
 
-  const { REMARK42 } = window
-  if (REMARK42) {
-    REMARK42.destroy()
-  }
+            initRemark42(location.origin + location.pathname)
+          }
+        }
+      })
+    })
+  })
 
-  if (location.pathname.startsWith('/post/')) {
-    initRemark42(location.origin + location.pathname)
-  }
+  observer.observe(document.body, {
+    subtree: true,
+    childList: true,
+    characterData: true,
+    attributes: true,
+    attributeFilter: ['id']
+  })
 }
 
 exports.onPreRouteUpdate = () => {

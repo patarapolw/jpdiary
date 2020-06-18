@@ -1,15 +1,21 @@
 import styled from '@emotion/styled'
+import { MDXProvider } from '@mdx-js/react'
 import { Link } from 'gatsby'
+import { MDXRenderer } from 'gatsby-plugin-mdx'
+import React from 'react'
 import tw from 'tailwind.macro'
 
 import PostHeader from './PostHeader'
 
 const PostFull = ({ post }: {
   post: {
+    id: string
+    slug: string
     title: string
-    image?: string
     tag?: string[]
-    html: string
+    date: string
+    excerpt: string
+    body: string
   }
 }) => {
   const Section = styled.section`
@@ -59,13 +65,18 @@ const PostFull = ({ post }: {
           <PostHeader post={post} />
           <h1 className="title">{post.title}</h1>
 
-          {post.image ? (
+          {/* {post.image ? (
             <div className="image-full">
               <img src={post.image} alt={post.title} />
             </div>
-          ) : null}
+          ) : null} */}
 
-          <div dangerouslySetInnerHTML={{ __html: post.html }}></div>
+          <div className="content">
+            <MDXProvider>
+              <MDXRenderer>{post.body}</MDXRenderer>
+            </MDXProvider>
+          </div>
+
           <div className="tw-break-word">
             <span>Tags: {(post.tag || []).map((t: string) => (
               <span className="u-tag" key={t}>

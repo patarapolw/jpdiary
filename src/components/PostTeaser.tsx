@@ -1,11 +1,20 @@
 import styled from '@emotion/styled'
+import { MDXProvider } from '@mdx-js/react'
 import dayjs from 'dayjs'
 import { Link } from 'gatsby'
+import { MDXRenderer } from 'gatsby-plugin-mdx'
+import React from 'react'
 
 import PostHeader from './PostHeader'
 
 const PostTeaser = ({ post }: {
-  post: any
+  post: {
+    title: string
+    date?: string
+    tag?: string[]
+    excerptBody: string
+    slug: string
+  }
 }) => {
   const postUrl = (() => {
     const { date, slug } = post
@@ -62,17 +71,21 @@ const PostTeaser = ({ post }: {
       <article className="card-content">
         <PostHeader post={post} />
         <div className="post-content">
-          {post.image ? (
+          {/* {post.image ? (
             <div className="image-teaser">
               <img src={post.image} alt={post.title} />
             </div>
-          ) : null}
+          ) : null} */}
 
           <Link to={postUrl} className="header-link">
             <h2 className="title">{post.title}</h2>
           </Link>
 
-          <div className="content" dangerouslySetInnerHTML={{ __html: post.excerptHtml }}></div>
+          <div className="content">
+            <MDXProvider>
+              <MDXRenderer>{post.excerptBody}</MDXRenderer>
+            </MDXProvider>
+          </div>
         </div>
       </article>
     </Section>

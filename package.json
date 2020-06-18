@@ -6,10 +6,9 @@
   "author": "Pacharapol Withayasakpunt <polv@polv.cc>",
   "license": "MIT",
   "scripts": {
-    "db:build": "ts-node -O '{\"module\": \"commonjs\"}' scripts/build.ts",
-    "dev": "yarn db:build && next",
-    "build": "yarn db:build && next build",
-    "start": "next start",
+    "dev": "gatsby develop",
+    "build": "gatsby build",
+    "start": "gatsby",
     "lint:fix": "eslint --fix '**'",
     "tailwind:init": "npx tailwindcss init"
   },
@@ -25,10 +24,7 @@
     "gatsby-source-filesystem": "^2.3.11",
     "gatsby-transformer-sharp": "^2.5.5",
     "lunr": "^2.3.8",
-    "netlify-lambda": "^1.6.3",
-    "remark-parse": "^8.0.2",
-    "remark-react": "^7.0.1",
-    "unified": "^9.0.0"
+    "netlify-lambda": "^1.6.3"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.56",

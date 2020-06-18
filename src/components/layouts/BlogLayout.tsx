@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import { graphql, Link, useStaticQuery } from 'gatsby'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import tw from 'tailwind.macro'
 
 const query = graphql`
