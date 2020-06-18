@@ -16,9 +16,6 @@ export default class MyDocument extends Document {
           <meta name="keywords" content={config.keywords.join(',')} />
           <meta name="description" content={config.description} />
 
-          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css"/>
-          <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-
           {sidebarTwitter ? (
             <script async charSet="utf8" src="https://platform.twitter.com/widgets.js"></script>
           ) : null}

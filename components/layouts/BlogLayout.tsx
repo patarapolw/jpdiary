@@ -26,9 +26,9 @@ const BlogLayout = ({ children, banner }: {
             onKeyPress={() => setNavExpanded(!isNavExpanded)}
             tabIndex={0}
             data-target="navbarMain">
-            <span aria-hidden="true">-</span>
-            <span aria-hidden="true">-</span>
-            <span aria-hidden="true">-</span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
           </a>
         </div>
 

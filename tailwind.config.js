@@ -1,11 +1,11 @@
 module.exports = {
   prefix: 'tw-',
-  purge: [
-    './components/**/*.tsx',
-    './components/**/*.jsx',
-    './pages/**/*.tsx',
-    './pages/**/*.jsx'
-  ],
+  purge: {
+    content: [
+      './pages/**/*.{js,jsx,ts,tsx}',
+      './components/**/*.{js,jsx,ts,tsx}'
+    ]
+  },
   theme: {
     extend: {}
   },
