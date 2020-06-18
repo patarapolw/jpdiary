@@ -6,8 +6,9 @@ import { IPost } from '@/types/post'
 import PostHeader from './PostHeader'
 import RemarkReact from './RemarkReact'
 
-const PostTeaser = ({ post }: {
+const PostTeaser = ({ post, author }: {
   post: IPost
+  author: typeof import('@/theme-config.json')['author']
 }) => {
   const postUrl = (() => {
     const { date, slug } = post
@@ -23,7 +24,7 @@ const PostTeaser = ({ post }: {
   return (
     <section className="card">
       <article className="card-content">
-        <PostHeader post={post} />
+        <PostHeader post={post} author={author} />
         <div className="post-content">
           {post.image ? (
             <div className="image-teaser">

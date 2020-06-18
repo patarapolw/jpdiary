@@ -2,19 +2,20 @@ import Link from 'next/link'
 import { createRef, useEffect } from 'react'
 
 import { initRemark42 } from '@/assets/remark42'
-import themeConfig from '@/theme-config.json'
 import { IPost } from '@/types/post'
 
 import PostHeader from './PostHeader'
 import RemarkReact from './RemarkReact'
 
-const PostFull = ({ post }: {
+const PostFull = ({ post, remark42, author }: {
   post: IPost
+  remark42: typeof import('@/theme-config.json')['comment']['remark42']
+  author: typeof import('@/theme-config.json')['author']
 }) => {
   const remarkRef = createRef<HTMLDivElement>()
 
   useEffect(() => {
-    initRemark42(themeConfig.comment.remark42, location.origin + location.pathname)
+    initRemark42(remark42, location.origin + location.pathname)
 
     return () => {
       const { REMARK42 } = window as any
@@ -28,7 +29,7 @@ const PostFull = ({ post }: {
     <section>
       <article className="card tw-my-4">
         <div className="card-content content">
-          <PostHeader post={post} />
+          <PostHeader author={author} post={post} />
           <h1 className="title">{post.title}</h1>
 
           {post.image ? (

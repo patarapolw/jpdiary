@@ -9,11 +9,12 @@ import Empty from './Empty'
 import Pagination from './Pagination'
 import PostTeaser from './PostTeaser'
 
-const PostQuery = ({ defaults }: {
+const PostQuery = ({ defaults, author }: {
   defaults: {
     posts: IPost[]
     count: number
   }
+  author: typeof import('@/theme-config.json')['author']
 }) => {
   const [count, setCount] = useState(defaults.count)
   const [posts, setPosts] = useState(defaults.posts)
@@ -50,7 +51,7 @@ const PostQuery = ({ defaults }: {
           <article>
             {posts.map((p) => (
               <div className="post-query-entry" key={p.slug}>
-                <PostTeaser post={p} />
+                <PostTeaser post={p} author={author} />
               </div>
             ))}
             <Pagination

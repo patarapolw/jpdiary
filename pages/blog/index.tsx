@@ -1,17 +1,18 @@
 import BlogLayout from '@/components/layouts/BlogLayout'
 import PostQuery from '@/components/PostQuery'
-import search from '@/scripts/search'
 import { IPost } from '@/types/post'
 
 interface IProp {
   posts: IPost[]
   count: number
+  banner: string
+  author: typeof import('@/theme-config.json')['author']
 }
 
-const Blog = (defaults: IProp) => {
+const Blog = ({ posts, count, banner, author }: IProp) => {
   return (
-    <BlogLayout>
-      <PostQuery defaults={defaults} />
+    <BlogLayout banner={banner}>
+      <PostQuery defaults={{ posts, count }} author={author} />
     </BlogLayout>
   )
 }
@@ -19,12 +20,17 @@ const Blog = (defaults: IProp) => {
 export default Blog
 
 export const getStaticProps = async (): Promise<{ props: IProp }> => {
+  const { default: search } = await import('@/scripts/search')
   const r = search()
+
+  const { default: { banner, author } } = await import('@/theme-config.json')
 
   return {
     props: {
       posts: r.result,
-      count: r.count
+      count: r.count,
+      banner,
+      author
     }
   }
 }

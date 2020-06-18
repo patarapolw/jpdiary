@@ -1,11 +1,11 @@
 import dayjs from 'dayjs'
 
 import { getGravatarUrl } from '@/assets/gravatar'
-import config from '@/theme-config.json'
 import { IPost } from '@/types/post'
 
-const PostHeader = ({ post }: {
+const PostHeader = ({ post, author }: {
   post: IPost
+  author: typeof import('@/theme-config.json')['author']
 }) => {
   const dateString = (() => {
     const djs = post.date ? dayjs(post.date) : null
@@ -17,11 +17,11 @@ const PostHeader = ({ post }: {
 
   return (
     <section className="tw-mb-2 post-meta">
-      <a className="post-meta-author" href={config.author.url} target="_blank" rel="noreferrer noopener nofollow">
+      <a className="post-meta-author" href={author.url} target="_blank" rel="noreferrer noopener nofollow">
         <span>
-          <img src={getGravatarUrl(config.author.email, 64)} alt={config.author.name} />
+          <img src={getGravatarUrl(author.email, 64)} alt={author.name} />
         </span>
-        <span>{config.author.name}</span>
+        <span>{author.name}</span>
       </a>
 
       <div className="tw-flex-grow"></div>

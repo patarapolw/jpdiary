@@ -1,10 +1,9 @@
 import Link from 'next/link'
 import { useState } from 'react'
 
-import config from '@/theme-config.json'
-
-const BlogLayout = ({ children }: {
+const BlogLayout = ({ children, banner }: {
   children: React.ReactNode
+  banner: string
 }) => {
   const [isNavExpanded, setNavExpanded] = useState(false)
 
@@ -14,7 +13,7 @@ const BlogLayout = ({ children }: {
         <div className="navbar-brand">
           <Link href="/">
             <a className="navbar-item">
-              <h1 className="tw-font-bold">{config.banner}</h1>
+              <h1 className="tw-font-bold">{banner}</h1>
             </a>
           </Link>
 
