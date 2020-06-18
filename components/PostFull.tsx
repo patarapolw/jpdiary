@@ -115,6 +115,7 @@ if (typeof window !== 'undefined') {
     childList: true,
     characterData: true,
     attributes: true,
-    attributeFilter: ['id']
+    attributeFilter: ['id'],
+    subtree: true
   })
 }
