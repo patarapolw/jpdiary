@@ -9,8 +9,6 @@ import * as z from 'zod'
 
 import { IPost } from '@/types/post'
 
-import MakeHtml from './make-html'
-
 export async function buildIndexes () {
   const buildPath = (p: string) => path.join(__dirname, '../build', p)
   const contentPath = (p: string) => path.join(__dirname, '../_posts', p)
@@ -25,16 +23,16 @@ export async function buildIndexes () {
   files.map((f) => {
     const slug = f.replace(/^.+\//, '').replace(/\.md/, '')
     let header: Record<string, any> = {}
-    const md = fs.readFileSync(f, 'utf8')
-    const makeHtml = new MakeHtml(slug)
-    let excerpt = md
+    let markdown = fs.readFileSync(f, 'utf8')
+    let excerpt = markdown
 
-    if (md.startsWith('---\n')) {
-      const [h, c = ''] = md.substr(4).split(/---\n(.*)$/s)
+    if (markdown.startsWith('---\n')) {
+      const [h, c = ''] = markdown.substr(4).split(/---\n(.*)$/s)
       header = yaml.safeLoad(h, {
         schema: yaml.JSON_SCHEMA
       })
       excerpt = c.split(/<!-- excerpt(?:_separator)? -->/)[0]
+      markdown = c
     }
 
     const p = {
@@ -47,8 +45,7 @@ export async function buildIndexes () {
         .parse(header.tag || [])
         .map((t) => t.toLocaleLowerCase().replace(/ /g, '-')),
       excerpt,
-      excerptHtml: makeHtml.render(excerpt),
-      html: makeHtml.render(md)
+      markdown
     }
 
     rawJson.push(p)

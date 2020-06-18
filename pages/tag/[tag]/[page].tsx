@@ -1,26 +1,26 @@
 import Head from 'next/head'
 
-import tagJson from '@/build/tag.json'
 import BlogLayout from '@/components/layouts/BlogLayout'
 import PostQuery from '@/components/PostQuery'
-import search from '@/scripts/search'
-import config from '@/theme-config.json'
 import { IPost } from '@/types/post'
 
 interface IProp {
   posts: IPost[]
   count: number
   tag: string
+  title: string
+  banner: string
+  author: typeof import('@/theme-config.json')['author']
 }
 
-const TagPaged = ({ posts, count, tag }: IProp) => {
+const TagPaged = ({ posts, count, tag, title, banner, author }: IProp) => {
   return (
     <>
       <Head>
-        <title>Tag: {tag} - {config.title}</title>
+        <title>Tag: {tag} - {title}</title>
       </Head>
-      <BlogLayout>
-        <PostQuery defaults={{ posts, count }} />
+      <BlogLayout banner={banner} >
+        <PostQuery defaults={{ posts, count }} author={author} />
       </BlogLayout>
     </>
   )
@@ -29,6 +29,8 @@ const TagPaged = ({ posts, count, tag }: IProp) => {
 export default TagPaged
 
 export const getStaticPaths = async () => {
+  const { default: tagJson } = await import('@/build/tag.json')
+
   return {
     paths: Object.entries(tagJson).map(([tag, count]) => {
       return Array(Math.ceil(count / 5) - 1).fill(tag).map((t, i) => ({
@@ -48,6 +50,9 @@ export const getStaticProps = async ({ params: { tag, page } }: {
     page: string
   }
 }): Promise<{ props: IProp }> => {
+  const { default: search } = await import('@/scripts/search')
+  const { default: { title, banner, author } } = await import('@/theme-config.json')
+
   const r = search({
     tag,
     offset: (parseInt(page) - 1) * 5
@@ -57,7 +62,10 @@ export const getStaticProps = async ({ params: { tag, page } }: {
     props: {
       posts: r.result,
       count: r.count,
-      tag
+      tag,
+      title,
+      banner,
+      author
     }
   }
 }

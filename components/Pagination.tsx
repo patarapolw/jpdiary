@@ -2,15 +2,11 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import qs from 'query-string'
 
-import sMargin from '@/styles/margin.module.scss'
-
-interface IProp {
+const Pagination = ({ current: page, total, q }: {
   current: number
   total: number
   q: string
-}
-
-const Pagination = ({ current: page, total, q }: IProp) => {
+}) => {
   const { pathname } = useRouter()
 
   const setPageUrl = (p: number) => {
@@ -22,7 +18,7 @@ const Pagination = ({ current: page, total, q }: IProp) => {
 
   return (
     <nav
-      className={['pagination', 'is-rounded', sMargin['my-1'], sMargin['mx-0_5']].join(' ')}
+      className="pagination is-rounded tw-my-4 tw-mx-2"
       role="navigation"
       aria-label="pagination">
       {page > 1 ? (

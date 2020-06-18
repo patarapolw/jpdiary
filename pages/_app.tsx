@@ -1,17 +1,33 @@
-import { AppProps } from 'next/app'
+import 'bulma/bulma.sass'
+import '@fortawesome/fontawesome-free/css/all.css'
+import '@/styles/tailwind.css'
+
+import App, { AppProps } from 'next/app'
 import Head from 'next/head'
 
-import config from '@/theme-config.json'
+export default class MyApp extends App<AppProps & { title: string }> {
+  static async getInitialProps ({ Component, ctx }) {
+    let pageProps = {}
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
-  return (
-    <>
-      <Head>
-        <title>{config.title}</title>
-      </Head>
-      <Component {...pageProps} />
-    </>
-  )
+    if (Component.getInitialProps) {
+      pageProps = await Component.getInitialProps(ctx)
+    }
+
+    const { default: { title } } = await import('@/theme-config.json')
+
+    return { pageProps, title }
+  }
+
+  render () {
+    const { title, Component, pageProps } = this.props
+
+    return (
+      <>
+        <Head>
+          <title>{title}</title>
+        </Head>
+        <Component {...pageProps} />
+      </>
+    )
+  }
 }
-
-export default MyApp

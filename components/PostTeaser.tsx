@@ -4,12 +4,12 @@ import Link from 'next/link'
 import { IPost } from '@/types/post'
 
 import PostHeader from './PostHeader'
+import RemarkReact from './RemarkReact'
 
-interface IProp {
+const PostTeaser = ({ post, author }: {
   post: IPost
-}
-
-const PostTeaser = ({ post }: IProp) => {
+  author: typeof import('@/theme-config.json')['author']
+}) => {
   const postUrl = (() => {
     const { date, slug } = post
     if (date) {
@@ -24,7 +24,7 @@ const PostTeaser = ({ post }: IProp) => {
   return (
     <section className="card">
       <article className="card-content">
-        <PostHeader post={post} />
+        <PostHeader post={post} author={author} />
         <div className="post-content">
           {post.image ? (
             <div className="image-teaser">
@@ -38,7 +38,7 @@ const PostTeaser = ({ post }: IProp) => {
             </a>
           </Link>
 
-          <div className="content" dangerouslySetInnerHTML={{ __html: post.excerptHtml }}></div>
+          <RemarkReact markdown={post.excerpt} />
         </div>
       </article>
 

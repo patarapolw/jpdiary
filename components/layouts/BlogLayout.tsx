@@ -1,14 +1,10 @@
 import Link from 'next/link'
 import { useState } from 'react'
 
-import sExtra from '@/styles/extra.module.scss'
-import config from '@/theme-config.json'
-
-interface IProp {
+const BlogLayout = ({ children, banner }: {
   children: React.ReactNode
-}
-
-const BlogLayout = ({ children }: IProp) => {
+  banner: string
+}) => {
   const [isNavExpanded, setNavExpanded] = useState(false)
 
   return (
@@ -17,7 +13,7 @@ const BlogLayout = ({ children }: IProp) => {
         <div className="navbar-brand">
           <Link href="/">
             <a className="navbar-item">
-              <h1 className={sExtra.bold}>{config.banner}</h1>
+              <h1 className="tw-font-bold">{banner}</h1>
             </a>
           </Link>
 

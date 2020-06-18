@@ -1,84 +1,35 @@
 import Link from 'next/link'
-import { useEffect } from 'react'
+import { createRef, useEffect } from 'react'
 
-import { fixDOM } from '@/assets/fix-html'
 import { initRemark42 } from '@/assets/remark42'
-import sExtra from '@/styles/extra.module.scss'
-import sMargin from '@/styles/margin.module.scss'
-import themeConfig from '@/theme-config.json'
 import { IPost } from '@/types/post'
 
 import PostHeader from './PostHeader'
+import RemarkReact from './RemarkReact'
 
-declare global {
-  interface Window {
-    remark42Observer: MutationObserver
-  }
-}
-
-const PostFull = ({ post }: {
+const PostFull = ({ post, remark42, author }: {
   post: IPost
+  remark42: typeof import('@/theme-config.json')['comment']['remark42']
+  author: typeof import('@/theme-config.json')['author']
 }) => {
+  const remarkRef = createRef<HTMLDivElement>()
+
   useEffect(() => {
-    if (!window.remark42Observer) {
-      window.remark42Observer = new MutationObserver((muts) => {
-        muts.map((mut) => {
-          mut.addedNodes.forEach((n) => {
-            if (n instanceof HTMLElement) {
-              const mainEl = n.querySelector('main')
-              if (mainEl) {
-                fixDOM(n)
-              }
+    initRemark42(remark42, location.origin + location.pathname)
 
-              const remarkEl = n.querySelector('#remark42')
-
-              if (remarkEl) {
-                const { REMARK42 } = window as any
-                if (REMARK42) {
-                  REMARK42.destroy()
-                }
-
-                initRemark42(themeConfig.comment.remark42, location.origin + location.pathname)
-              }
-            }
-          })
-
-          mut.removedNodes.forEach((n) => {
-            if (n instanceof HTMLElement) {
-              const remarkEl = n.querySelector('#remark42')
-              const { REMARK42 } = window as any
-              if (REMARK42) {
-                REMARK42.destroy()
-              }
-            }
-          })
-        })
-      })
-
-      window.remark42Observer.observe(document.body, {
-        childList: true,
-        characterData: true,
-        subtree: true
-      })
-
-      const remarkEl = document.querySelector('#remark42')
-
-      if (remarkEl) {
-        const { REMARK42 } = window as any
-        if (REMARK42) {
-          REMARK42.destroy()
-        }
-
-        initRemark42(themeConfig.comment.remark42, location.origin + location.pathname)
+    return () => {
+      const { REMARK42 } = window as any
+      if (REMARK42) {
+        REMARK42.destroy()
       }
     }
-  }, [])
+  }, [remarkRef.current])
 
   return (
     <section>
-      <article className={sMargin['my-1']}>
+      <article className="card tw-my-4">
         <div className="card-content content">
-          <PostHeader post={post} />
+          <PostHeader author={author} post={post} />
           <h1 className="title">{post.title}</h1>
 
           {post.image ? (
@@ -87,8 +38,9 @@ const PostFull = ({ post }: {
             </div>
           ) : null}
 
-          <div dangerouslySetInnerHTML={{ __html: post.html }}></div>
-          <div className={sExtra['break-word']}>
+          <RemarkReact markdown={post.markdown} />
+
+          <div className="tw-break-word">
             <span>Tags: {(post.tag || []).map((t: string) => (
               <span className="u-tag" key={t}>
                 <Link href={`/tag/${t}`}><a>{t}</a></Link>
@@ -98,9 +50,9 @@ const PostFull = ({ post }: {
         </div>
       </article>
 
-      <footer className={['card', sMargin['my-1']].join(' ')}>
+      <footer className="card tw-my-4">
         <div className="card-content">
-          <div id="remark42"></div>
+          <div id="remark42" ref={remarkRef}></div>
         </div>
       </footer>
 

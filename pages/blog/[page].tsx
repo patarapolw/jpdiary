@@ -1,18 +1,18 @@
-import rawJson from '@/build/raw.json'
 import BlogLayout from '@/components/layouts/BlogLayout'
 import PostQuery from '@/components/PostQuery'
-import search from '@/scripts/search'
 import { IPost } from '@/types/post'
 
 interface IProp {
   posts: IPost[]
   count: number
+  banner: string
+  author: typeof import('@/theme-config.json')['author']
 }
 
-const BlogPaged = (defaults: IProp) => {
+const BlogPaged = ({ posts, count, banner, author }: IProp) => {
   return (
-    <BlogLayout>
-      <PostQuery defaults={defaults} />
+    <BlogLayout banner={banner}>
+      <PostQuery defaults={{ posts, count }} author={author} />
     </BlogLayout>
   )
 }
@@ -20,6 +20,8 @@ const BlogPaged = (defaults: IProp) => {
 export default BlogPaged
 
 export const getStaticPaths = async () => {
+  const { default: rawJson } = await import('@/build/raw.json')
+
   return {
     paths: Array(Math.ceil(Object.keys(rawJson).length / 5) - 1).fill(null).map((_, i) => {
       return {
@@ -37,12 +39,17 @@ export const getStaticProps = async ({ params: { page } }: {
     page: string
   }
 }): Promise<{ props: IProp }> => {
+  const { default: search } = await import('@/scripts/search')
   const r = search({ offset: (parseInt(page) - 1) * 5 })
+
+  const { default: { banner, author } } = await import('@/theme-config.json')
 
   return {
     props: {
       posts: r.result,
-      count: r.count
+      count: r.count,
+      banner,
+      author
     }
   }
 }
