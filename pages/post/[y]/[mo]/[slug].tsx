@@ -1,4 +1,4 @@
-import Head from 'next/head'
+import { NextSeo } from 'next-seo'
 
 import BlogLayout from '@/components/layouts/BlogLayout'
 import PostFull from '@/components/PostFull'
@@ -15,13 +15,15 @@ interface IProps {
 const Post = ({ post: p, banner, remark42, author }: IProps) => {
   return (
     <>
-      <Head>
-        <title>{p.title} - {config.title}</title>
-        <meta name="description" content={config.description} />
-        <meta name="keywords" content={(p.tag || []).join(',')} />
-        <meta property="og:image" content={p.image} />
-        <meta property="twitter:image" content={p.image} />
-      </Head>
+      <NextSeo
+        title={`${p.title} - ${config.title}`}
+        description={config.description}
+        openGraph={{
+          images: p.image ? [{
+            url: p.image
+          }] : undefined,
+          article: { tags: p.tag }
+        }} />
       <BlogLayout banner={banner}>
         <PostFull author={author} remark42={remark42} post={p} />
       </BlogLayout>

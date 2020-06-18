@@ -1,7 +1,7 @@
 import '@/styles/tailwind.css'
 
+import { NextSeo } from 'next-seo'
 import App, { AppProps } from 'next/app'
-import Head from 'next/head'
 
 export default class MyApp extends App<AppProps & { title: string }> {
   static async getInitialProps ({ Component, ctx }) {
@@ -21,9 +21,7 @@ export default class MyApp extends App<AppProps & { title: string }> {
 
     return (
       <>
-        <Head>
-          <title>{title}</title>
-        </Head>
+        <NextSeo title={title} />
         <Component {...pageProps} />
       </>
     )

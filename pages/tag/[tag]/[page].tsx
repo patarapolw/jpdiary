@@ -1,4 +1,4 @@
-import Head from 'next/head'
+import { NextSeo } from 'next-seo'
 
 import BlogLayout from '@/components/layouts/BlogLayout'
 import PostQuery from '@/components/PostQuery'
@@ -16,9 +16,7 @@ interface IProp {
 const TagPaged = ({ posts, count, tag, title, banner, author }: IProp) => {
   return (
     <>
-      <Head>
-        <title>Tag: {tag} - {title}</title>
-      </Head>
+      <NextSeo title={`Tag: ${tag} - ${title}`} />
       <BlogLayout banner={banner} >
         <PostQuery defaults={{ posts, count }} author={author} />
       </BlogLayout>
