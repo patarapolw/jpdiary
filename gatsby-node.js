@@ -92,7 +92,7 @@ exports.createPages = async ({ graphql, actions }) => {
       mo = _mo
     }
 
-    const slug = fileAbsolutePath.replace(/^.*\//, '').replace(/.\.+$/, '')
+    const slug = fileAbsolutePath.replace(/^.*\//, '').replace(/\..+$/, '')
     const excerptBody = rawBody.split(/<!-- excerpt -->/)[0].replace(/^---\n.*?\n---\n/s, '')
 
     rawJson.push({
