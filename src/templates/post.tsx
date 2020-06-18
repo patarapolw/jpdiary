@@ -1,5 +1,6 @@
 import React from 'react'
 
+import BlogLayout from '@/components/layouts/BlogLayout'
 import PostFull from '@/components/PostFull'
 import SEO from '@/components/seo'
 
@@ -21,7 +22,9 @@ const Post = ({ pageContext: p }: {
         description={p.excerpt}
         // image={p.image}
         tag={p.tag} />
-      <PostFull post={p} />
+      <BlogLayout>
+        <PostFull post={p} />
+      </BlogLayout>
     </>
   )
 }

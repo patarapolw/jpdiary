@@ -1,7 +1,5 @@
-import styled from '@emotion/styled'
 import { graphql, Link, useStaticQuery } from 'gatsby'
 import React, { useState } from 'react'
-import tw from 'tailwind.macro'
 
 const query = graphql`
   query BlogLayout {
@@ -25,16 +23,12 @@ const BlogLayout = ({ children }: {
     }
   } = useStaticQuery(query)
 
-  const H1 = styled.h1`
-    ${tw`font-bold`}
-  `
-
   return (
     <section>
       <nav className="navbar has-shadow is-fixed-top" role="navigation" aria-label="main navigation">
         <div className="navbar-brand">
           <Link to="/" className="navbar-item">
-            <H1>{banner}</H1>
+            <h1 className="tw-font-bold">{banner}</h1>
           </Link>
 
           <a

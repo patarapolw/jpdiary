@@ -3,7 +3,6 @@ import { MDXProvider } from '@mdx-js/react'
 import { Link } from 'gatsby'
 import { MDXRenderer } from 'gatsby-plugin-mdx'
 import React from 'react'
-import tw from 'tailwind.macro'
 
 import PostHeader from './PostHeader'
 
@@ -19,18 +18,6 @@ const PostFull = ({ post }: {
   }
 }) => {
   const Section = styled.section`
-    article {
-      ${tw`my-4`}
-    }
-
-    footer {
-      ${tw`my-4`}
-    }
-
-    .tw-break-word {
-      ${tw`break-words`}
-    }
-
     .u-tag + .u-tag {
       margin-left: 0.5em;
     }
@@ -60,7 +47,7 @@ const PostFull = ({ post }: {
 
   return (
     <Section>
-      <article>
+      <article className="tw-my-4">
         <div className="card-content content">
           <PostHeader post={post} />
           <h1 className="title">{post.title}</h1>
@@ -77,7 +64,7 @@ const PostFull = ({ post }: {
             </MDXProvider>
           </div>
 
-          <div className="tw-break-word">
+          <div className="tw-break-words">
             <span>Tags: {(post.tag || []).map((t: string) => (
               <span className="u-tag" key={t}>
                 <Link to={`/tag/${t}`}>{t}</Link>
@@ -87,7 +74,7 @@ const PostFull = ({ post }: {
         </div>
       </article>
 
-      <footer className="card">
+      <footer className="card tw-my-4">
         <div className="card-content">
           <div id="remark42"></div>
         </div>

@@ -69,9 +69,6 @@ const SEO = ({ title, description, image, article, tag }: {
 
       <meta name="twitter:card" content="summary_large_image" />
 
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css"/>
-      <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-
       {/* {sidebarTwitter ? (
         <script async charSet="utf8" src="https://platform.twitter.com/widgets.js"></script>
       ) : null} */}

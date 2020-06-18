@@ -1,8 +1,7 @@
 import styled from '@emotion/styled'
 import dayjs from 'dayjs'
-import { useStaticQuery } from 'gatsby'
+import { graphql, useStaticQuery } from 'gatsby'
 import React from 'react'
-import tw from 'tailwind.macro'
 
 import { getGravatarUrl } from '@/lib/gravatar'
 
@@ -10,7 +9,19 @@ interface IProp {
   post: any
 }
 
-declare const query: any
+const query = graphql`
+  query PostHeader {
+    site {
+      siteMetadata {
+        author {
+          url
+          email
+          name
+        }
+      }
+    }
+  }
+`
 
 const PostHeader = ({ post }: IProp) => {
   const dateString = (() => {
@@ -34,12 +45,6 @@ const PostHeader = ({ post }: IProp) => {
   } = useStaticQuery(query)
 
   const Section = styled.section`
-    ${tw`mb-2`}
-
-    .tw-flow-grow-1 {
-      ${tw`flex-grow`}
-    }
-
     display: flex;
     flex-direction: row;
     white-space: nowrap;
@@ -65,7 +70,7 @@ const PostHeader = ({ post }: IProp) => {
   `
 
   return (
-    <Section>
+    <Section className="tw-mb-2">
       <a className="post-meta-author" href={authorUrl} target="_blank" rel="noreferrer noopener nofollow">
         <span>
           <img src={getGravatarUrl(authorEmail, 24)} alt={authorName} />
@@ -73,7 +78,7 @@ const PostHeader = ({ post }: IProp) => {
         <span>{authorName}</span>
       </a>
 
-      <div className="tw-flex-grow-1"></div>
+      <div className="tw-flex-grow"></div>
 
       {dateString ? <div>{dateString}</div> : null}
     </Section>

@@ -42,7 +42,8 @@ const Tagged = ({
   },
   pageContext: {
     tag
-  }
+  },
+  location
 }: {
   data: {
     allMdx: {
@@ -65,18 +66,19 @@ const Tagged = ({
   pageContext: {
     tag: string
   }
+  location: Location
 }) => {
   return (
     <>
       <SEO title={`Tag: ${tag}`} />
       <BlogLayout>
-        <PostQuery defaults={{
+        <PostQuery location={location} defaults={{
           posts: edges.map((el) => {
             return {
               title: el.node.frontmatter.title,
               tag: el.node.frontmatter.tag,
               date: el.node.frontmatter.date,
-              excerptBody: el.node.rawBody.split(/<!-- excerpt -->/)[0],
+              excerptBody: el.node.rawBody.split(/<!-- excerpt -->/)[0].replace(/^---\n.*?\n---\n/s, ''),
               slug: el.node.fileAbsolutePath.replace(/^.*\//, '').replace(/.\.+$/, '')
             }
           }),

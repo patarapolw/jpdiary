@@ -1,7 +1,6 @@
 import styled from '@emotion/styled'
 import qs from 'query-string'
 import React, { useEffect, useState } from 'react'
-import tw from 'tailwind.macro'
 
 import { normalizeArray } from '@/lib/util'
 
@@ -20,13 +19,14 @@ const PostQuery = (props: {
     }[]
     count: number
   }
+  location: Location
 }) => {
-  const { defaults } = props
+  const { defaults, location } = props
 
   const [count, setCount] = useState(defaults.count)
   const [posts, setPosts] = useState(defaults.posts)
 
-  const { query: { q, page, tag } } = props as any
+  const { q, page, tag } = qs.parse(location.search)
   const [isQReady, setQReady] = useState(!q)
 
   if (!isQReady) {
@@ -49,20 +49,12 @@ const PostQuery = (props: {
     .post-query-entry {
       margin-top: 1rem;
     }
-
-    header {
-      ${tw`m-4`}
-    }
-
-    .tw-font-bold {
-      ${tw`font-bold`}
-    }
   `
 
   return (
     <Section>
       {tag ? (
-        <header>
+        <header className="tw-m-4">
           Tag: <span className="tw-font-bold">{tag}</span>
         </header>
       ) : null}
@@ -76,6 +68,7 @@ const PostQuery = (props: {
               </div>
             ))}
             <Pagination
+              location={location}
               current={parseInt(normalizeArray(page) || '1')}
               total={Math.ceil(count / 5)}
               q={normalizeArray(q)} />

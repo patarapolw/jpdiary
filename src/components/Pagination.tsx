@@ -1,16 +1,14 @@
-import styled from '@emotion/styled'
 import { Link } from 'gatsby'
 import qs from 'query-string'
 import React from 'react'
-import tw from 'tailwind.macro'
 
 const Pagination = (props: {
   current: number
   total: number
   q: string
+  location: Location
 }) => {
-  const { current: page, total, q } = props
-  const { pathname } = (props as any).location as Location
+  const { current: page, total, q, location: { pathname } } = props
 
   const setPageUrl = (p: number) => {
     const path0 = pathname.replace(/\/(\d+)?$/, '')
@@ -19,15 +17,9 @@ const Pagination = (props: {
     })}`
   }
 
-  const Nav = styled.nav`
-    ${tw`mx-2 my-4`}
-
-
-  `
-
   return (
-    <Nav
-      className="pagination is-rounded"
+    <nav
+      className="pagination is-rounded tw-mx-2 tw-my-4"
       role="navigation"
       aria-label="pagination">
       {page > 1 ? (
@@ -93,7 +85,7 @@ const Pagination = (props: {
           </li>
         ) : null}
       </ul>
-    </Nav>
+    </nav>
   )
 }
 

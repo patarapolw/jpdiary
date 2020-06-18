@@ -16,6 +16,21 @@ exports.createSchemaCustomization = ({ actions }) => {
       tag: [String!]
       image: String
     }
+
+    type SitePage @infer {
+      context: SitePageContext!
+    }
+
+    type SitePageContext @dontInfer {
+      slug: String!
+      title: String!
+      tag: [String!]
+      excerpt: String!
+      excerptBody: String!
+      body: String!
+      date: String
+      image: String
+    }
   `)
 }
 
@@ -78,13 +93,14 @@ exports.createPages = async ({ graphql, actions }) => {
     }
 
     const slug = fileAbsolutePath.replace(/^.*\//, '').replace(/.\.+$/, '')
+    const excerptBody = rawBody.split(/<!-- excerpt -->/)[0].replace(/^---\n.*?\n---\n/s, '')
 
     rawJson.push({
       slug,
       title,
       tag: postTag,
       excerpt,
-      excerptBody: rawBody.split(/<!-- excerpt -->/)[0]
+      excerptBody
     })
 
     createPage({
@@ -95,8 +111,7 @@ exports.createPages = async ({ graphql, actions }) => {
         title,
         tag: postTag,
         date,
-        excerptBody: rawBody.split(/<!-- excerpt -->/)[0]
-          .replace(/^---\n.*?\n---\n/s, ''),
+        excerptBody,
         body
       }
     })

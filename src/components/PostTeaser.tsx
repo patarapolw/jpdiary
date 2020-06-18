@@ -1,9 +1,10 @@
 import styled from '@emotion/styled'
-import { MDXProvider } from '@mdx-js/react'
 import dayjs from 'dayjs'
 import { Link } from 'gatsby'
-import { MDXRenderer } from 'gatsby-plugin-mdx'
 import React from 'react'
+import parse from 'remark-parse'
+import remark2react from 'remark-react'
+import unified from 'unified'
 
 import PostHeader from './PostHeader'
 
@@ -78,13 +79,18 @@ const PostTeaser = ({ post }: {
           ) : null} */}
 
           <Link to={postUrl} className="header-link">
-            <h2 className="title">{post.title}</h2>
+            <h2 className="title tw-mb-4">{post.title}</h2>
           </Link>
 
           <div className="content">
-            <MDXProvider>
-              <MDXRenderer>{post.excerptBody}</MDXRenderer>
-            </MDXProvider>
+            {
+              (unified()
+                .use(parse)
+                .use(remark2react, {
+                  sanitize: false
+                })
+                .processSync(post.excerptBody) as any).result
+            }
           </div>
         </div>
       </article>

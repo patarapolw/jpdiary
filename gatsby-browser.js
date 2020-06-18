@@ -1,5 +1,10 @@
-const Prism = require('prismjs')
-const themeConfig = require('./theme-config.json')
+import 'bulma/bulma.sass'
+import '@fortawesome/fontawesome-free/scss/fontawesome.scss'
+import './src/styles/tailwind.css'
+
+import Prism from 'prismjs'
+
+import themeConfig from './theme-config.json'
 
 function fixDOM (dom) {
   dom.querySelectorAll('iframe').forEach((el) => {
@@ -65,7 +70,7 @@ function initRemark42 (url) {
   })(remark_config.components || ['embed'])
 }
 
-exports.onClientEntry = () => {
+export const onClientEntry = () => {
   const observer = new MutationObserver((muts) => {
     muts.forEach((mut) => {
       mut.addedNodes.forEach((addedNode) => {
@@ -94,7 +99,7 @@ exports.onClientEntry = () => {
   })
 }
 
-exports.onPreRouteUpdate = () => {
+export const onPreRouteUpdate = () => {
   const { REMARK42 } = window
   if (REMARK42) {
     REMARK42.destroy()
