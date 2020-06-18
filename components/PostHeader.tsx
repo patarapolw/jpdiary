@@ -23,7 +23,7 @@ const PostHeader = ({ post }: IProp) => {
     <section className={[sMargin['mb-0_5'], 'post-meta'].join(' ')}>
       <a className="post-meta-author" href={config.author.url} target="_blank" rel="noreferrer noopener nofollow">
         <span>
-          <img src={getGravatarUrl(config.author.email, 24)} alt={config.author.name} />
+          <img src={getGravatarUrl(config.author.email, 64)} alt={config.author.name} />
         </span>
         <span>{config.author.name}</span>
       </a>

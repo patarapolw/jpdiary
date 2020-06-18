@@ -80,27 +80,41 @@ export default class PostFull extends Component<IProp> {
   }
 }
 
-Router.events.on('routeChangeComplete', () => {
-  if (typeof window !== 'undefined') {
-    const mainEl = document.querySelector('main')
-    if (mainEl) {
-      fixDOM(mainEl)
-    }
+if (typeof window !== 'undefined') {
+  const observer = new MutationObserver((muts) => {
+    muts.map((mut) => {
+      mut.addedNodes.forEach((n) => {
+        if (n instanceof HTMLElement) {
+          if (n.tagName.toLocaleLowerCase() === 'main') {
+            fixDOM(n)
+          } else if (n.id === 'remark42') {
+            const { REMARK42 } = window as any
+            if (REMARK42) {
+              REMARK42.destroy()
+            }
 
-    const { REMARK42 } = window as any
-    if (REMARK42) {
-      REMARK42.destroy()
-    }
+            initRemark42(location.origin + location.pathname)
+          }
+        }
+      })
 
-    initRemark42(location.origin + location.pathname)
-  }
-})
+      mut.removedNodes.forEach((n) => {
+        if (n instanceof HTMLElement) {
+          if (n.id === 'remark42') {
+            const { REMARK42 } = window as any
+            if (REMARK42) {
+              REMARK42.destroy()
+            }
+          }
+        }
+      })
+    })
+  })
 
-Router.events.on('beforeHistoryChange', () => {
-  if (typeof window !== 'undefined') {
-    const { REMARK42 } = window as any
-    if (REMARK42) {
-      REMARK42.destroy()
-    }
-  }
-})
+  observer.observe(document.body, {
+    childList: true,
+    characterData: true,
+    attributes: true,
+    attributeFilter: ['id']
+  })
+}
