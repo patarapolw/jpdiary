@@ -1,6 +1,7 @@
 import { Head } from 'next/document'
 
 import rawJson from '@/build/raw.json'
+import BlogLayout from '@/components/layouts/BlogLayout'
 import PostFull from '@/components/PostFull'
 import post from '@/scripts/post'
 import config from '@/theme-config.json'
@@ -16,7 +17,9 @@ const PostAtRoot = (p: IPost) => {
         <meta property="og:image" content={p.image} />
         <meta property="twitter:image" content={p.image} />
       </Head>
-      <PostFull post={p} />
+      <BlogLayout>
+        <PostFull post={p} />
+      </BlogLayout>
     </>
   )
 }

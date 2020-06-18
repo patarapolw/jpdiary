@@ -4,8 +4,6 @@ import Head from 'next/head'
 import config from '@/theme-config.json'
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
-  console.log(pageProps)
-
   return (
     <>
       <Head>
