@@ -1,11 +1,11 @@
 import Link from 'next/link'
-import Router from 'next/router'
 import { Component } from 'react'
 
 import { fixDOM } from '@/assets/fix-html'
 import { initRemark42 } from '@/assets/remark42'
 import sExtra from '@/styles/extra.module.scss'
 import sMargin from '@/styles/margin.module.scss'
+import themeConfig from '@/theme-config.json'
 import { IPost } from '@/types/post'
 
 import PostHeader from './PostHeader'
@@ -85,26 +85,30 @@ if (typeof window !== 'undefined') {
     muts.map((mut) => {
       mut.addedNodes.forEach((n) => {
         if (n instanceof HTMLElement) {
-          if (n.tagName.toLocaleLowerCase() === 'main') {
+          const mainEl = n.querySelector('main')
+          if (mainEl) {
             fixDOM(n)
-          } else if (n.id === 'remark42') {
+          }
+
+          const remarkEl = n.querySelector('#remark42')
+
+          if (remarkEl) {
             const { REMARK42 } = window as any
             if (REMARK42) {
               REMARK42.destroy()
             }
 
-            initRemark42(location.origin + location.pathname)
+            initRemark42(themeConfig.comment.remark42, location.origin + location.pathname)
           }
         }
       })
 
       mut.removedNodes.forEach((n) => {
         if (n instanceof HTMLElement) {
-          if (n.id === 'remark42') {
-            const { REMARK42 } = window as any
-            if (REMARK42) {
-              REMARK42.destroy()
-            }
+          const remarkEl = n.querySelector('#remark42')
+          const { REMARK42 } = window as any
+          if (REMARK42) {
+            REMARK42.destroy()
           }
         }
       })
@@ -114,8 +118,6 @@ if (typeof window !== 'undefined') {
   observer.observe(document.body, {
     childList: true,
     characterData: true,
-    attributes: true,
-    attributeFilter: ['id'],
     subtree: true
   })
 }

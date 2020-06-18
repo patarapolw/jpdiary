@@ -1,8 +1,8 @@
-export function initRemark42 (url: string) {
+export function initRemark42 (config: any, url: string) {
   // eslint-disable-next-line camelcase
   const remark_config = {
-    host: process.env['comment.remark42.host'], // hostname of remark server, same as REMARK_URL in backend config, e.g. "https://demo.remark42.com"
-    site_id: process.env['comment.remark42.siteId'],
+    host: config.host, // hostname of remark server, same as REMARK_URL in backend config, e.g. "https://demo.remark42.com"
+    site_id: config.siteId,
     components: ['embed'], // optional param; which components to load. default to ["embed"]
     // to load all components define components as ['embed', 'last-comments', 'counter']
     // available component are:
@@ -28,10 +28,10 @@ export function initRemark42 (url: string) {
     //
     // If you deal with query parameters make sure you pass only significant part of it
     // in well defined order
-    max_shown_comments: process.env['comment.remark42.maxShownComments'], // optional param; if it isn't defined default value (15) will be used
-    theme: process.env['comment.remark42.theme'], // optional param; if it isn't defined default value ('light') will be used
+    max_shown_comments: config.maxShownComments, // optional param; if it isn't defined default value (15) will be used
+    theme: config.theme, // optional param; if it isn't defined default value ('light') will be used
     // page_title: 'Moving to Remark42', // optional param; if it isn't defined `document.title` will be used
-    locale: process.env['comment.remark42.locale'] // set up locale and language, if it isn't defined default value ('en') will be used,
+    locale: config.locale // set up locale and language, if it isn't defined default value ('en') will be used,
   }
 
   // eslint-disable-next-line camelcase
