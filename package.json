@@ -13,7 +13,7 @@
     "lint:fix": "eslint --fix '**'"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.13.0",
+    "@fortawesome/fontawesome-free": "^5.13.1",
     "@types/lunr": "^2.3.3",
     "@types/rimraf": "^3.0.0",
     "@zeit/next-sass": "^1.0.1",
